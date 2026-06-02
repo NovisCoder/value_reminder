@@ -6,712 +6,189 @@
 <title>이쁜 우리 아기 혁신이 이유식 대작전</title>
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Jua&family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
 <style>
-/* ══════════════════════════
-   CSS 변수 & 리셋
-══════════════════════════ */
 :root {
-  --cream:   #fdf6e3;
-  --cream2:  #f5e6c8;
-  --warm:    #e8c98a;
-  --brown:   #7a4f1e;
-  --brown2:  #5a3510;
-  --orange:  #e07030;
-  --orange2: #f09050;
-  --red:     #c0392b;
-  --green:   #4a8c5c;
-  --green2:  #6ab87a;
-  --ink:     #2c1a0e;
-  --ink2:    #4a2e14;
-  --gold:    #c9922a;
-  --gold2:   #f0c060;
-  --dialog:  rgba(42,20,6,0.88);
-  --dborder: rgba(201,146,42,0.45);
-  --pink:    #f08080;
-  --pink2:   #ffc0c0;
+  --cream:#fdf6e3; --cream2:#f5e6c8; --warm:#e8c98a;
+  --brown:#7a4f1e; --brown2:#5a3510;
+  --orange:#e07030; --orange2:#f09050;
+  --red:#c0392b; --green:#4a8c5c; --green2:#6ab87a;
+  --ink:#2c1a0e; --ink2:#4a2e14;
+  --gold:#c9922a; --gold2:#f0c060;
+  --dialog:rgba(42,20,6,0.88); --dborder:rgba(201,146,42,0.45);
+  --pink:#f08080; --pink2:#ffc0c0;
 }
-*, *::before, *::after { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
-html, body { width:100%; height:100%; overflow:hidden; background:#2c1a0e; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{width:100%;height:100%;overflow:hidden;background:#2c1a0e;}
+#app{width:100%;height:100%;max-width:430px;margin:0 auto;position:relative;overflow:hidden;font-family:'Nanum Myeongjo',serif;background:#2c1a0e;}
 
-#app {
-  width:100%; height:100%;
-  max-width:430px;
-  margin:0 auto;
-  position:relative;
-  overflow:hidden;
-  font-family:'Nanum Myeongjo', serif;
-  background:#2c1a0e;
-}
+/* 화면 전환 */
+.screen{position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity 0.45s ease;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;}
+.screen.active{opacity:1;pointer-events:all;}
+#cover{position:fixed;inset:0;max-width:430px;left:50%;transform:translateX(-50%);background:#2c1a0e;z-index:999;opacity:0;pointer-events:none;transition:opacity 0.35s ease;}
+#cover.on{opacity:1;pointer-events:all;}
 
-/* ══ 화면 전환 ══ */
-.screen {
-  position:absolute; inset:0;
-  opacity:0; pointer-events:none;
-  transition:opacity 0.45s ease;
-  overflow-y:auto; overflow-x:hidden;
-  -webkit-overflow-scrolling:touch;
-}
-.screen.active { opacity:1; pointer-events:all; }
+/* 공통 버튼 */
+.btn-gold{font-family:'Jua',sans-serif;font-size:17px;background:linear-gradient(135deg,#c9922a,#f0c060,#c9922a);background-size:200% 100%;border:none;border-radius:4px;padding:16px;width:100%;color:var(--ink);cursor:pointer;letter-spacing:3px;box-shadow:0 4px 20px rgba(201,146,42,0.4),0 2px 0 #8a6010;animation:shimmer 3s 1s infinite linear;}
+@keyframes shimmer{0%{background-position:0%}100%{background-position:200%}}
+.btn-gold:active{transform:translateY(2px);box-shadow:0 1px 8px rgba(201,146,42,0.3);}
+.section-divider{width:60px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:10px auto;}
 
-/* ══ 전환 커버 ══ */
-#cover {
-  position:fixed; inset:0;
-  max-width:430px; left:50%; transform:translateX(-50%);
-  background:#2c1a0e;
-  z-index:999;
-  opacity:0; pointer-events:none;
-  transition:opacity 0.35s ease;
-}
-#cover.on { opacity:1; pointer-events:all; }
+/* ── 타이틀 ── */
+#scr-title{background:linear-gradient(180deg,#1a0c04 0%,#2e1808 40%,#3d2510 70%,#1a0c04 100%);display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:0 24px 50px;text-align:center;}
+.title-deco-l{position:absolute;top:60px;left:12px;font-family:'Nanum Myeongjo',serif;font-size:64px;writing-mode:vertical-rl;color:rgba(201,146,42,0.1);line-height:1;pointer-events:none;user-select:none;}
+.title-deco-r{position:absolute;top:80px;right:12px;font-family:'Nanum Myeongjo',serif;font-size:48px;writing-mode:vertical-rl;color:rgba(201,146,42,0.08);line-height:1;pointer-events:none;user-select:none;}
+.title-tag{display:inline-block;border:1.5px solid var(--red);color:var(--red);font-family:'Nanum Gothic',sans-serif;font-size:10px;font-weight:800;padding:3px 14px;letter-spacing:3px;margin-bottom:18px;animation:fadeUp 0.7s 0.2s both;}
+.title-emoji-wrap{position:relative;margin-bottom:14px;animation:fadeUp 0.7s 0.3s both;}
+.title-main-emoji{font-size:80px;line-height:1;animation:floaty 3s ease-in-out infinite;display:block;filter:drop-shadow(0 0 30px rgba(240,192,96,0.4));}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.title-badge-emoji{position:absolute;bottom:-4px;right:calc(50% - 56px);font-size:32px;animation:floaty 2.5s 0.5s ease-in-out infinite;}
+.title-main{font-family:'Jua',sans-serif;font-size:26px;color:var(--gold2);text-shadow:2px 2px 8px rgba(0,0,0,0.7),0 0 40px rgba(201,146,42,0.3);line-height:1.4;margin-bottom:5px;animation:fadeUp 0.7s 0.5s both;}
+.title-subtitle{font-size:12px;color:rgba(253,246,227,0.55);font-family:'Nanum Gothic',sans-serif;margin-bottom:28px;letter-spacing:1px;animation:fadeUp 0.7s 0.7s both;}
+.title-info-box{background:rgba(20,10,4,0.75);border:1px solid var(--dborder);border-radius:4px;padding:16px 20px;text-align:left;margin-bottom:24px;position:relative;overflow:hidden;animation:fadeUp 0.7s 0.9s both;}
+.title-info-box::before{content:'';position:absolute;top:0;left:0;width:2px;height:100%;background:linear-gradient(180deg,var(--gold),transparent);}
+.info-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px;font-size:12px;color:rgba(253,246,227,0.75);font-family:'Nanum Gothic',sans-serif;line-height:1.6;}
+.info-row:last-child{margin-bottom:0;}
+.info-ico{font-size:14px;flex-shrink:0;margin-top:1px;}
+.hi{color:var(--gold2);font-weight:700;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 
-/* ══════════════════════════
-   공통 컴포넌트
-══════════════════════════ */
-.btn-gold {
-  font-family:'Jua', sans-serif;
-  font-size:17px;
-  background:linear-gradient(135deg,#c9922a,#f0c060,#c9922a);
-  background-size:200% 100%;
-  border:none; border-radius:4px;
-  padding:16px; width:100%;
-  color:var(--ink); cursor:pointer;
-  letter-spacing:3px;
-  box-shadow:0 4px 20px rgba(201,146,42,0.4), 0 2px 0 #8a6010;
-  animation:shimmer 3s 1s infinite linear;
-}
-@keyframes shimmer{ 0%{background-position:0%}100%{background-position:200%} }
-.btn-gold:active { transform:translateY(2px); box-shadow:0 1px 8px rgba(201,146,42,0.3); }
+/* ── 씬 공통 ── */
+.scene-top{flex-shrink:0;position:relative;overflow:hidden;}
+.scene-bg-layer{position:absolute;inset:0;z-index:0;}
+.bg-home{background:radial-gradient(ellipse 80% 50% at 50% 100%,rgba(120,70,20,0.5) 0%,transparent 70%),linear-gradient(180deg,#0e1a28 0%,#1a2e44 40%,#3a2810 55%,#2a1c08 100%);}
+.bg-kitchen{background:radial-gradient(ellipse 70% 40% at 50% 90%,rgba(200,130,50,0.3) 0%,transparent 60%),linear-gradient(180deg,#1a1208 0%,#2a1e10 45%,#3a2c18 60%,#2a1e10 100%);}
+.bg-feeding{background:radial-gradient(ellipse 80% 60% at 50% 80%,rgba(240,192,96,0.15) 0%,transparent 70%),linear-gradient(180deg,#0e1808 0%,#1a2810 40%,#283818 60%,#1a2810 100%);}
+.bg-success{background:radial-gradient(ellipse 80% 60% at 50% 50%,rgba(106,184,122,0.25) 0%,transparent 70%),linear-gradient(180deg,#081408 0%,#102010 40%,#1e3818 60%,#102010 100%);}
+.bg-fail{background:radial-gradient(ellipse 70% 50% at 50% 50%,rgba(192,57,43,0.2) 0%,transparent 70%),linear-gradient(180deg,#140808 0%,#201010 40%,#301818 60%,#201010 100%);}
+.bg-meeting{background:radial-gradient(ellipse 60% 40% at 50% 90%,rgba(60,30,10,0.8) 0%,transparent 70%),linear-gradient(180deg,#1a1008 0%,#2a1e10 40%,#3a2a18 60%,#1a1008 100%);}
+.scene-chars{position:absolute;inset:0;z-index:2;display:flex;align-items:flex-end;justify-content:center;padding-bottom:8px;gap:10px;}
+.scene-char{font-size:72px;line-height:1;filter:drop-shadow(0 6px 16px rgba(0,0,0,0.6));animation:floaty 3s ease-in-out infinite;flex-shrink:0;}
+.scene-char.right{animation-delay:0.4s;}
+.scene-char.small{font-size:44px;animation-delay:0.8s;}
 
-.section-divider {
-  width:60px; height:1px;
-  background:linear-gradient(90deg,transparent,var(--gold),transparent);
-  margin:10px auto;
-}
+/* ── 대화창 ── */
+.dialog-area{flex:1;padding:0 14px 16px;display:flex;flex-direction:column;}
+.speaker-tab{display:inline-flex;align-items:center;gap:6px;background:var(--dialog);border:1px solid var(--dborder);border-bottom:none;padding:5px 14px;border-radius:4px 4px 0 0;margin-left:8px;margin-bottom:-1px;position:relative;z-index:1;}
+.spk-ico{font-size:13px;}
+.spk-nm{font-size:11px;color:var(--gold2);font-family:'Nanum Gothic',sans-serif;font-weight:800;letter-spacing:1px;}
+.dialog-box{background:var(--dialog);border:1px solid var(--dborder);border-radius:0 4px 4px 4px;padding:14px 16px 12px;position:relative;cursor:pointer;flex-shrink:0;}
+.dialog-box::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,var(--gold),transparent 70%);}
+.dlg-txt{font-size:14px;color:var(--cream);line-height:1.85;min-height:52px;}
+.dlg-txt b{color:var(--gold2);font-weight:700;}
+.dlg-txt em{color:var(--pink2);font-style:normal;}
+.dlg-txt .g{color:var(--green2);}
+.dlg-next{margin-top:8px;text-align:right;font-size:9px;color:var(--gold);font-family:'Nanum Gothic',sans-serif;letter-spacing:1px;animation:pulse 1.5s infinite;}
+@keyframes pulse{0%,100%{opacity:0.5}50%{opacity:1}}
 
-/* ══════════════════════════
-   타이틀 화면
-══════════════════════════ */
-#scr-title {
-  background:linear-gradient(180deg, #1a0c04 0%, #2e1808 40%, #3d2510 70%, #1a0c04 100%);
-  display:flex; flex-direction:column;
-  align-items:center; justify-content:flex-end;
-  padding:0 24px 50px;
-  text-align:center;
-}
+/* ── 인트로 ── */
+#scr-intro{background:linear-gradient(180deg,#1a0c04 0%,#2e1808 50%,#3a2210 100%);display:flex;flex-direction:column;}
 
-.title-deco-l {
-  position:absolute; top:60px; left:12px;
-  font-family:'Nanum Myeongjo',serif;
-  font-size:64px; writing-mode:vertical-rl;
-  color:rgba(201,146,42,0.1); line-height:1;
-  pointer-events:none; user-select:none;
-}
-.title-deco-r {
-  position:absolute; top:80px; right:12px;
-  font-family:'Nanum Myeongjo',serif;
-  font-size:48px; writing-mode:vertical-rl;
-  color:rgba(201,146,42,0.08); line-height:1;
-  pointer-events:none; user-select:none;
-}
+/* ── 창고 ── */
+#scr-pantry{background:linear-gradient(180deg,#1a1208 0%,#2a1e10 100%);display:flex;flex-direction:column;}
+.pantry-header{padding:16px 20px 10px;background:linear-gradient(180deg,rgba(20,10,4,0.9),transparent);flex-shrink:0;position:sticky;top:0;z-index:10;}
+.pantry-title{font-family:'Jua',sans-serif;font-size:16px;color:var(--gold2);letter-spacing:1px;margin-bottom:3px;}
+.pantry-sub{font-size:10px;color:rgba(253,246,227,0.5);font-family:'Nanum Gothic',sans-serif;letter-spacing:0.5px;}
+.pantry-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:10px 14px 110px;}
+.ingredient-card{background:rgba(42,28,12,0.8);border:1px solid rgba(201,146,42,0.2);border-radius:8px;padding:12px 8px;text-align:center;position:relative;transition:transform 0.2s,border-color 0.2s;}
+.ingredient-card.good-card{border-color:rgba(74,140,92,0.3);}
+.ingredient-card.bad-card{border-color:rgba(192,57,43,0.2);}
+.ing-emoji{font-size:34px;display:block;margin-bottom:4px;}
+.ing-food-name{font-size:9px;color:rgba(253,246,227,0.4);font-family:'Nanum Gothic',sans-serif;margin-bottom:4px;display:block;}
+.ing-value-name{font-size:11px;color:var(--gold2);font-family:'Jua',sans-serif;display:block;line-height:1.2;}
+.pantry-bottom{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;padding:14px 20px 24px;background:linear-gradient(0deg,rgba(20,10,4,1) 70%,transparent);z-index:20;}
+.pantry-cry-notice{background:rgba(192,57,43,0.25);border:1px solid rgba(192,57,43,0.5);border-radius:4px;padding:8px 14px;font-size:11px;color:var(--pink2);font-family:'Nanum Gothic',sans-serif;text-align:center;margin-bottom:10px;animation:shakePulse 0.8s infinite;}
+@keyframes shakePulse{0%,100%{transform:translateX(0)}25%{transform:translateX(-2px)}75%{transform:translateX(2px)}}
 
-.title-tag {
-  display:inline-block;
-  border:1.5px solid var(--red);
-  color:var(--red);
-  font-family:'Nanum Gothic',sans-serif;
-  font-size:10px; font-weight:800;
-  padding:3px 14px; letter-spacing:3px;
-  margin-bottom:18px;
-  animation:fadeUp 0.7s 0.2s both;
-}
-.title-emoji-wrap {
-  position:relative; margin-bottom:14px;
-  animation:fadeUp 0.7s 0.3s both;
-}
-.title-main-emoji { font-size:80px; line-height:1; animation:floaty 3s ease-in-out infinite; display:block; filter:drop-shadow(0 0 30px rgba(240,192,96,0.4)); }
-@keyframes floaty{ 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
-.title-badge-emoji {
-  position:absolute; bottom:-4px; right:calc(50% - 56px);
-  font-size:32px; animation:floaty 2.5s 0.5s ease-in-out infinite;
-}
+/* ── 제조 씬 ── */
+#scr-cooking{background:linear-gradient(180deg,#1a1208 0%,#2a1e10 100%);display:flex;flex-direction:column;}
+.cooking-header{padding:16px 20px 0;flex-shrink:0;}
+.cooking-title{font-family:'Jua',sans-serif;font-size:15px;color:var(--gold2);letter-spacing:1px;margin-bottom:8px;}
+.progress-row{display:flex;align-items:center;gap:5px;margin-bottom:0;}
+.prog-pip{width:18px;height:3px;border-radius:2px;background:rgba(201,146,42,0.2);transition:background 0.3s;}
+.prog-pip.done{background:var(--gold);}
+.prog-pip.cur{background:var(--gold2);width:24px;}
+.prog-label{font-size:9px;color:var(--gold);font-family:'Nanum Gothic',sans-serif;margin-left:4px;}
+.cooking-stage{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px 24px;gap:16px;}
+.stage-ingredient-card{background:rgba(42,28,12,0.9);border:2px solid var(--dborder);border-radius:12px;padding:24px 28px;text-align:center;width:100%;max-width:280px;position:relative;overflow:hidden;animation:cardAppear 0.4s cubic-bezier(0.34,1.56,0.64,1);}
+@keyframes cardAppear{from{transform:scale(0.7) translateY(20px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
+.stage-ingredient-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+.stage-ing-emoji{font-size:72px;display:block;margin-bottom:8px;}
+.stage-food-lbl{font-size:10px;color:rgba(253,246,227,0.35);font-family:'Nanum Gothic',sans-serif;letter-spacing:1px;margin-bottom:10px;display:block;}
+.stage-value-name{font-family:'Jua',sans-serif;font-size:28px;color:var(--gold2);display:block;margin-bottom:6px;text-shadow:0 0 20px rgba(240,192,96,0.4);}
+.stage-value-desc{font-size:11px;color:rgba(253,246,227,0.5);font-family:'Nanum Gothic',sans-serif;line-height:1.6;display:block;}
+.choice-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;max-width:320px;}
+.choice-in{font-family:'Jua',sans-serif;font-size:15px;background:linear-gradient(135deg,var(--green),var(--green2));border:none;border-radius:6px;padding:16px 8px;color:white;cursor:pointer;box-shadow:0 4px 0 #2a5a38,0 4px 16px rgba(74,140,92,0.3);letter-spacing:1px;transition:transform 0.1s,box-shadow 0.1s;}
+.choice-in:active{transform:translateY(4px);box-shadow:0 0 0 #2a5a38;}
+.choice-out{font-family:'Jua',sans-serif;font-size:15px;background:rgba(42,28,12,0.9);border:2px solid rgba(201,146,42,0.4);border-radius:6px;padding:16px 8px;color:rgba(253,246,227,0.7);cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,0.4);letter-spacing:1px;transition:transform 0.1s,box-shadow 0.1s,border-color 0.2s;}
+.choice-out:hover{border-color:var(--gold);}
+.choice-out:active{transform:translateY(2px);box-shadow:0 0 0 rgba(0,0,0,0.4);}
 
-.title-main {
-  font-family:'Jua',sans-serif;
-  font-size:26px; color:var(--gold2);
-  text-shadow:2px 2px 8px rgba(0,0,0,0.7), 0 0 40px rgba(201,146,42,0.3);
-  line-height:1.4; margin-bottom:5px;
-  animation:fadeUp 0.7s 0.5s both;
-}
-.title-subtitle {
-  font-size:12px; color:rgba(253,246,227,0.55);
-  font-family:'Nanum Gothic',sans-serif;
-  margin-bottom:28px; letter-spacing:1px;
-  animation:fadeUp 0.7s 0.7s both;
-}
+/* ── 컷신 ── */
+#scr-cutscene{background:linear-gradient(180deg,#1a1208 0%,#2a1e10 100%);display:flex;flex-direction:column;}
 
-.title-info-box {
-  background:rgba(20,10,4,0.75);
-  border:1px solid var(--dborder);
-  border-radius:4px; padding:16px 20px;
-  text-align:left; margin-bottom:24px;
-  position:relative; overflow:hidden;
-  animation:fadeUp 0.7s 0.9s both;
-}
-.title-info-box::before {
-  content:''; position:absolute;
-  top:0; left:0; width:2px; height:100%;
-  background:linear-gradient(180deg,var(--gold),transparent);
-}
-.info-row {
-  display:flex; align-items:flex-start; gap:10px;
-  margin-bottom:8px; font-size:12px;
-  color:rgba(253,246,227,0.75);
-  font-family:'Nanum Gothic',sans-serif;
-  line-height:1.6;
-}
-.info-row:last-child { margin-bottom:0; }
-.info-ico { font-size:14px; flex-shrink:0; margin-top:1px; }
-.hi { color:var(--gold2); font-weight:700; }
+/* ── 결과 ── */
+#scr-result{display:flex;flex-direction:column;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.result-fixed-bg{position:fixed;inset:0;max-width:430px;left:50%;transform:translateX(-50%);z-index:0;}
+.result-scroll{position:relative;z-index:1;padding-bottom:40px;}
+.result-hero{padding:50px 24px 36px;text-align:center;position:relative;}
+.result-hero::after{content:'';position:absolute;bottom:0;left:15%;right:15%;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+.result-big{font-size:88px;display:block;animation:floaty 3s ease-in-out infinite;filter:drop-shadow(0 0 30px rgba(240,192,96,0.4));margin-bottom:14px;}
+.result-rank-badge{display:inline-block;border:1.5px solid var(--gold);color:var(--gold2);font-size:10px;font-family:'Nanum Gothic',sans-serif;font-weight:800;padding:3px 14px;letter-spacing:3px;margin-bottom:12px;}
+.result-title{font-family:'Jua',sans-serif;font-size:22px;color:var(--cream);line-height:1.45;text-shadow:2px 2px 8px rgba(0,0,0,0.7);margin-bottom:8px;}
+.result-sub{font-size:12px;color:rgba(253,246,227,0.55);font-family:'Nanum Gothic',sans-serif;line-height:1.8;}
+.baby-speech-section{margin:0 16px 16px;}
+.baby-speech-card{background:var(--dialog);border:1px solid var(--dborder);border-radius:4px;padding:16px 18px;position:relative;}
+.baby-speech-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,var(--gold),transparent 70%);}
+.baby-speech-header{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.baby-speech-ico{font-size:22px;}
+.baby-speech-who{font-size:11px;color:var(--gold2);font-family:'Nanum Gothic',sans-serif;font-weight:800;letter-spacing:1px;}
+.baby-speech-txt{font-size:13px;color:var(--cream);line-height:1.85;}
+.baby-speech-txt b{color:var(--gold2);}
+.baby-speech-txt em{color:var(--pink2);font-style:normal;}
+.baby-speech-txt .g{color:var(--green2);}
+.eval-section{margin:0 16px 16px;}
+.eval-title{font-size:10px;color:var(--gold);font-family:'Nanum Gothic',sans-serif;font-weight:800;letter-spacing:2px;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.eval-title::after{content:'';flex:1;height:1px;background:rgba(201,146,42,0.3);}
+.eval-card{background:rgba(20,12,4,0.7);border:1px solid var(--dborder);border-radius:4px;padding:14px 16px;margin-bottom:10px;display:flex;gap:12px;align-items:flex-start;}
+.eval-card.good{border-color:rgba(74,140,92,0.5);}
+.eval-card.bad{border-color:rgba(192,57,43,0.45);}
+.eval-card.neutral{border-color:rgba(201,146,42,0.4);}
+.eval-ico{font-size:24px;flex-shrink:0;margin-top:2px;}
+.eval-body{flex:1;}
+.eval-name{font-family:'Jua',sans-serif;font-size:14px;color:var(--gold2);margin-bottom:3px;display:flex;align-items:center;gap:6px;}
+.eval-tag{font-size:8px;padding:1px 7px;border-radius:10px;font-family:'Nanum Gothic',sans-serif;font-weight:800;letter-spacing:0.5px;}
+.eval-tag.good-tag{background:rgba(74,140,92,0.3);color:var(--green2);}
+.eval-tag.bad-tag{background:rgba(192,57,43,0.25);color:var(--pink2);}
+.eval-tag.not-used{background:rgba(100,100,100,0.3);color:rgba(253,246,227,0.4);}
+.eval-comment{font-size:11px;color:rgba(253,246,227,0.7);font-family:'Nanum Gothic',sans-serif;line-height:1.7;}
+.score-section{margin:0 16px 16px;}
+.score-item{margin-bottom:12px;}
+.score-row-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;}
+.score-lbl{font-size:12px;color:var(--cream);display:flex;align-items:center;gap:6px;}
+.score-val{font-family:'Nanum Gothic',sans-serif;font-size:12px;font-weight:800;color:var(--gold2);}
+.score-track{height:4px;background:rgba(201,146,42,0.15);border-radius:2px;overflow:hidden;}
+.score-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--gold),var(--gold2));width:0;transition:width 1.2s cubic-bezier(0.4,0,0.2,1);box-shadow:0 0 8px rgba(201,146,42,0.4);}
+.insight-section{margin:0 16px 16px;}
+.insight-card{background:rgba(20,12,4,0.7);border:1px solid var(--dborder);border-radius:4px;padding:16px 18px;position:relative;overflow:hidden;}
+.insight-card::before{content:'💡';position:absolute;top:12px;right:14px;font-size:24px;opacity:0.3;}
+.insight-item{display:flex;gap:10px;margin-bottom:9px;font-size:12px;color:rgba(253,246,227,0.8);font-family:'Nanum Gothic',sans-serif;line-height:1.7;}
+.insight-item:last-child{margin-bottom:0;}
+.insight-bullet{color:var(--gold);flex-shrink:0;}
+.replay-section{padding:0 16px;}
+.btn-replay{width:100%;background:transparent;border:1.5px solid var(--gold);border-radius:4px;padding:16px;font-family:'Jua',sans-serif;font-size:15px;color:var(--gold2);cursor:pointer;letter-spacing:3px;transition:background 0.2s;}
+.btn-replay:hover{background:rgba(201,146,42,0.1);}
 
-@keyframes fadeUp{ from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
-
-/* ══════════════════════════
-   인트로 씬 (할머니 집)
-══════════════════════════ */
-#scr-intro {
-  background:linear-gradient(180deg,#1a0c04 0%,#2e1808 50%,#3a2210 100%);
-  display:flex; flex-direction:column;
-}
-
-/* 씬 배경 공통 */
-.scene-top {
-  flex-shrink:0;
-  position:relative;
-  height:240px;
-  overflow:hidden;
-}
-.scene-bg-layer {
-  position:absolute; inset:0;
-  z-index:0;
-}
-/* 할머니 집 배경 */
-.bg-home {
-  background:
-    radial-gradient(ellipse 80% 50% at 50% 100%, rgba(120,70,20,0.5) 0%, transparent 70%),
-    linear-gradient(180deg,#0e1a28 0%,#1a2e44 40%,#3a2810 55%,#2a1c08 100%);
-}
-/* 주방 배경 */
-.bg-kitchen {
-  background:
-    radial-gradient(ellipse 70% 40% at 50% 90%, rgba(200,130,50,0.3) 0%, transparent 60%),
-    linear-gradient(180deg,#1a1208 0%,#2a1e10 45%,#3a2c18 60%,#2a1e10 100%);
-}
-/* 이유식 먹이기 배경 */
-.bg-feeding {
-  background:
-    radial-gradient(ellipse 80% 60% at 50% 80%, rgba(240,192,96,0.15) 0%, transparent 70%),
-    linear-gradient(180deg,#0e1808 0%,#1a2810 40%,#283818 60%,#1a2810 100%);
-}
-/* 성공 배경 */
-.bg-success {
-  background:
-    radial-gradient(ellipse 80% 60% at 50% 50%, rgba(106,184,122,0.25) 0%, transparent 70%),
-    linear-gradient(180deg,#081408 0%,#102010 40%,#1e3818 60%,#102010 100%);
-}
-/* 실패 배경 */
-.bg-fail {
-  background:
-    radial-gradient(ellipse 70% 50% at 50% 50%, rgba(192,57,43,0.2) 0%, transparent 70%),
-    linear-gradient(180deg,#140808 0%,#201010 40%,#301818 60%,#201010 100%);
-}
-
-.scene-chars {
-  position:absolute; inset:0; z-index:2;
-  display:flex; align-items:flex-end;
-  justify-content:center; padding-bottom:8px;
-  gap:10px;
-}
-.scene-char {
-  font-size:72px; line-height:1;
-  filter:drop-shadow(0 6px 16px rgba(0,0,0,0.6));
-  animation:floaty 3s ease-in-out infinite;
-  flex-shrink:0;
-}
-.scene-char.right { animation-delay:0.4s; }
-.scene-char.small { font-size:44px; animation-delay:0.8s; }
-
-/* 대화창 */
-.dialog-area {
-  flex:1; padding:0 14px 16px;
-  display:flex; flex-direction:column;
-}
-.speaker-tab {
-  display:inline-flex; align-items:center; gap:6px;
-  background:var(--dialog);
-  border:1px solid var(--dborder);
-  border-bottom:none;
-  padding:5px 14px; border-radius:4px 4px 0 0;
-  margin-left:8px; margin-bottom:-1px;
-  position:relative; z-index:1;
-}
-.spk-ico { font-size:13px; }
-.spk-nm {
-  font-size:11px; color:var(--gold2);
-  font-family:'Nanum Gothic',sans-serif;
-  font-weight:800; letter-spacing:1px;
-}
-.dialog-box {
-  background:var(--dialog);
-  border:1px solid var(--dborder);
-  border-radius:0 4px 4px 4px;
-  padding:14px 16px 12px;
-  position:relative; cursor:pointer;
-  flex-shrink:0;
-}
-.dialog-box::before {
-  content:''; position:absolute;
-  top:0; left:0; right:0; height:1px;
-  background:linear-gradient(90deg,var(--gold),transparent 70%);
-}
-.dlg-txt {
-  font-size:14px; color:var(--cream);
-  line-height:1.85; min-height:52px;
-}
-.dlg-txt b { color:var(--gold2); font-weight:700; }
-.dlg-txt em { color:var(--pink2); font-style:normal; }
-.dlg-txt .g { color:var(--green2); }
-.dlg-next {
-  margin-top:8px; text-align:right;
-  font-size:9px; color:var(--gold);
-  font-family:'Nanum Gothic',sans-serif;
-  letter-spacing:1px; animation:pulse 1.5s infinite;
-}
-@keyframes pulse{ 0%,100%{opacity:0.5} 50%{opacity:1} }
-
-/* ══════════════════════════
-   재료 창고 씬
-══════════════════════════ */
-#scr-pantry {
-  background:linear-gradient(180deg,#1a1208 0%,#2a1e10 100%);
-  display:flex; flex-direction:column;
-}
-
-.pantry-header {
-  padding:16px 20px 10px;
-  background:linear-gradient(180deg,rgba(20,10,4,0.9),transparent);
-  flex-shrink:0;
-  position:sticky; top:0; z-index:10;
-}
-.pantry-title {
-  font-family:'Jua',sans-serif;
-  font-size:16px; color:var(--gold2);
-  letter-spacing:1px; margin-bottom:3px;
-}
-.pantry-sub {
-  font-size:10px; color:rgba(253,246,227,0.5);
-  font-family:'Nanum Gothic',sans-serif;
-  letter-spacing:0.5px;
-}
-
-/* 재료 격자 */
-.pantry-grid {
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:10px; padding:10px 16px 100px;
-}
-
-.ingredient-card {
-  background:rgba(42,28,12,0.8);
-  border:1px solid rgba(201,146,42,0.2);
-  border-radius:8px;
-  padding:12px 8px;
-  text-align:center;
-  position:relative;
-  transition:transform 0.2s, border-color 0.2s;
-  cursor:default;
-}
-.ingredient-card.selected {
-  border-color:var(--gold);
-  background:rgba(80,50,15,0.85);
-  transform:scale(1.03);
-}
-.ingredient-card.selected::after {
-  content:'✓';
-  position:absolute; top:4px; right:6px;
-  font-size:10px; color:var(--gold2);
-  font-family:'Nanum Gothic',sans-serif;
-  font-weight:800;
-}
-.ing-emoji { font-size:34px; display:block; margin-bottom:4px; }
-.ing-food-name {
-  font-size:9px; color:rgba(253,246,227,0.4);
-  font-family:'Nanum Gothic',sans-serif;
-  margin-bottom:4px; display:block;
-}
-.ing-value-name {
-  font-size:11px; color:var(--gold2);
-  font-family:'Jua',sans-serif;
-  display:block; line-height:1.2;
-}
-
-/* 창고 하단 버튼 */
-.pantry-bottom {
-  position:fixed; bottom:0; left:50%; transform:translateX(-50%);
-  width:100%; max-width:430px;
-  padding:14px 20px 24px;
-  background:linear-gradient(0deg,rgba(20,10,4,1) 70%,transparent);
-  z-index:20;
-}
-.pantry-cry-notice {
-  background:rgba(192,57,43,0.25);
-  border:1px solid rgba(192,57,43,0.5);
-  border-radius:4px; padding:8px 14px;
-  font-size:11px; color:var(--pink2);
-  font-family:'Nanum Gothic',sans-serif;
-  text-align:center; margin-bottom:10px;
-  animation:shakePulse 1s infinite;
-}
-@keyframes shakePulse{ 0%,100%{transform:translateX(0)} 25%{transform:translateX(-2px)} 75%{transform:translateX(2px)} }
-
-/* ══════════════════════════
-   이유식 제조 씬
-══════════════════════════ */
-#scr-cooking {
-  background:linear-gradient(180deg,#1a1208 0%,#2a1e10 100%);
-  display:flex; flex-direction:column;
-}
-
-.cooking-header {
-  padding:16px 20px 0; flex-shrink:0;
-}
-.cooking-title {
-  font-family:'Jua',sans-serif;
-  font-size:15px; color:var(--gold2);
-  letter-spacing:1px; margin-bottom:2px;
-}
-.progress-row {
-  display:flex; align-items:center;
-  gap:5px; margin-bottom:0;
-}
-.prog-pip {
-  width:18px; height:3px; border-radius:2px;
-  background:rgba(201,146,42,0.2);
-  transition:background 0.3s;
-}
-.prog-pip.done { background:var(--gold); }
-.prog-pip.cur  { background:var(--gold2); width:24px; }
-.prog-label {
-  font-size:9px; color:var(--gold);
-  font-family:'Nanum Gothic',sans-serif;
-  margin-left:4px;
-}
-
-/* 재료 카드 제시 영역 */
-.cooking-stage {
-  flex:1;
-  display:flex; flex-direction:column;
-  align-items:center; justify-content:center;
-  padding:20px 24px;
-  gap:16px;
-}
-
-.stage-ingredient-card {
-  background:rgba(42,28,12,0.9);
-  border:2px solid var(--dborder);
-  border-radius:12px;
-  padding:24px 28px;
-  text-align:center;
-  width:100%;
-  max-width:280px;
-  position:relative;
-  overflow:hidden;
-  animation:cardAppear 0.4s cubic-bezier(0.34,1.56,0.64,1);
-}
-@keyframes cardAppear{
-  from{transform:scale(0.7) translateY(20px);opacity:0}
-  to{transform:scale(1) translateY(0);opacity:1}
-}
-.stage-ingredient-card::before {
-  content:''; position:absolute;
-  top:0; left:0; right:0; height:2px;
-  background:linear-gradient(90deg,transparent,var(--gold),transparent);
-}
-.stage-ing-emoji { font-size:72px; display:block; margin-bottom:8px; }
-.stage-food-lbl {
-  font-size:10px; color:rgba(253,246,227,0.35);
-  font-family:'Nanum Gothic',sans-serif;
-  letter-spacing:1px; margin-bottom:10px; display:block;
-}
-.stage-value-name {
-  font-family:'Jua',sans-serif;
-  font-size:28px; color:var(--gold2);
-  display:block; margin-bottom:6px;
-  text-shadow:0 0 20px rgba(240,192,96,0.4);
-}
-.stage-value-desc {
-  font-size:11px; color:rgba(253,246,227,0.5);
-  font-family:'Nanum Gothic',sans-serif;
-  line-height:1.6; display:block;
-}
-
-/* 넣는다 / 넣지 않는다 버튼 */
-.choice-row {
-  display:grid; grid-template-columns:1fr 1fr;
-  gap:12px; width:100%; max-width:320px;
-}
-.choice-in {
-  font-family:'Jua',sans-serif; font-size:15px;
-  background:linear-gradient(135deg,var(--green),var(--green2));
-  border:none; border-radius:6px;
-  padding:16px 8px; color:white; cursor:pointer;
-  box-shadow:0 4px 0 #2a5a38, 0 4px 16px rgba(74,140,92,0.3);
-  letter-spacing:1px; transition:transform 0.1s, box-shadow 0.1s;
-}
-.choice-in:active { transform:translateY(4px); box-shadow:0 0 0 #2a5a38; }
-.choice-out {
-  font-family:'Jua',sans-serif; font-size:15px;
-  background:rgba(42,28,12,0.9);
-  border:2px solid rgba(201,146,42,0.4);
-  border-radius:6px; padding:16px 8px;
-  color:rgba(253,246,227,0.7); cursor:pointer;
-  box-shadow:0 4px 0 rgba(0,0,0,0.4);
-  letter-spacing:1px; transition:transform 0.1s, box-shadow 0.1s, border-color 0.2s;
-}
-.choice-out:hover { border-color:var(--gold); }
-.choice-out:active { transform:translateY(2px); box-shadow:0 0 0 rgba(0,0,0,0.4); }
-
-/* ══════════════════════════
-   컷신: 이유식 완성
-══════════════════════════ */
-#scr-cutscene {
-  background:linear-gradient(180deg,#1a1208 0%,#2a1e10 100%);
-  display:flex; flex-direction:column;
-}
-
-/* ══════════════════════════
-   결과 화면
-══════════════════════════ */
-#scr-result {
-  display:flex; flex-direction:column;
-  overflow-y:auto; -webkit-overflow-scrolling:touch;
-}
-
-.result-fixed-bg {
-  position:fixed; inset:0;
-  max-width:430px; left:50%; transform:translateX(-50%);
-  z-index:0;
-}
-
-.result-scroll {
-  position:relative; z-index:1;
-  padding-bottom:40px;
-}
-
-.result-hero {
-  padding:50px 24px 36px;
-  text-align:center; position:relative;
-}
-.result-hero::after {
-  content:''; position:absolute;
-  bottom:0; left:15%; right:15%; height:1px;
-  background:linear-gradient(90deg,transparent,var(--gold),transparent);
-}
-
-.result-big { font-size:88px; display:block; animation:floaty 3s ease-in-out infinite; filter:drop-shadow(0 0 30px rgba(240,192,96,0.4)); margin-bottom:14px; }
-.result-rank-badge {
-  display:inline-block;
-  border:1.5px solid var(--gold);
-  color:var(--gold2);
-  font-size:10px; font-family:'Nanum Gothic',sans-serif;
-  font-weight:800; padding:3px 14px;
-  letter-spacing:3px; margin-bottom:12px;
-}
-.result-title {
-  font-family:'Jua',sans-serif;
-  font-size:22px; color:var(--cream);
-  line-height:1.45; text-shadow:2px 2px 8px rgba(0,0,0,0.7);
-  margin-bottom:8px;
-}
-.result-sub {
-  font-size:12px; color:rgba(253,246,227,0.55);
-  font-family:'Nanum Gothic',sans-serif; line-height:1.8;
-}
-
-/* 혁신이 반응 멘트 */
-.baby-speech-section {
-  margin:0 16px 16px;
-}
-.baby-speech-card {
-  background:var(--dialog);
-  border:1px solid var(--dborder);
-  border-radius:4px; padding:16px 18px;
-  position:relative;
-}
-.baby-speech-card::before {
-  content:''; position:absolute;
-  top:0; left:0; right:0; height:1px;
-  background:linear-gradient(90deg,var(--gold),transparent 70%);
-}
-.baby-speech-header {
-  display:flex; align-items:center; gap:8px; margin-bottom:10px;
-}
-.baby-speech-ico { font-size:22px; }
-.baby-speech-who {
-  font-size:11px; color:var(--gold2);
-  font-family:'Nanum Gothic',sans-serif; font-weight:800; letter-spacing:1px;
-}
-.baby-speech-txt {
-  font-size:13px; color:var(--cream);
-  line-height:1.85;
-}
-.baby-speech-txt b { color:var(--gold2); }
-.baby-speech-txt em { color:var(--pink2); font-style:normal; }
-.baby-speech-txt .g { color:var(--green2); }
-
-/* 재료 평가 */
-.eval-section {
-  margin:0 16px 16px;
-}
-.eval-title {
-  font-size:10px; color:var(--gold);
-  font-family:'Nanum Gothic',sans-serif;
-  font-weight:800; letter-spacing:2px;
-  margin-bottom:12px;
-  display:flex; align-items:center; gap:8px;
-}
-.eval-title::after { content:''; flex:1; height:1px; background:rgba(201,146,42,0.3); }
-
-.eval-card {
-  background:rgba(20,12,4,0.7);
-  border:1px solid var(--dborder);
-  border-radius:4px; padding:14px 16px;
-  margin-bottom:10px;
-  display:flex; gap:12px; align-items:flex-start;
-}
-.eval-card.good { border-color:rgba(74,140,92,0.5); }
-.eval-card.bad  { border-color:rgba(192,57,43,0.45); }
-.eval-card.neutral { border-color:rgba(201,146,42,0.4); }
-
-.eval-ico { font-size:24px; flex-shrink:0; margin-top:2px; }
-.eval-body { flex:1; }
-.eval-name {
-  font-family:'Jua',sans-serif; font-size:14px;
-  color:var(--gold2); margin-bottom:3px;
-  display:flex; align-items:center; gap:6px;
-}
-.eval-tag {
-  font-size:8px; padding:1px 7px; border-radius:10px;
-  font-family:'Nanum Gothic',sans-serif; font-weight:800; letter-spacing:0.5px;
-}
-.eval-tag.good-tag { background:rgba(74,140,92,0.3); color:var(--green2); }
-.eval-tag.bad-tag  { background:rgba(192,57,43,0.25); color:var(--pink2); }
-.eval-tag.not-used { background:rgba(100,100,100,0.3); color:rgba(253,246,227,0.4); }
-.eval-comment {
-  font-size:11px; color:rgba(253,246,227,0.7);
-  font-family:'Nanum Gothic',sans-serif; line-height:1.7;
-}
-
-/* 인사이트 */
-.insight-section {
-  margin:0 16px 16px;
-}
-.insight-card {
-  background:rgba(20,12,4,0.7);
-  border:1px solid var(--dborder);
-  border-radius:4px; padding:16px 18px;
-  position:relative; overflow:hidden;
-}
-.insight-card::before {
-  content:'💡'; position:absolute;
-  top:12px; right:14px; font-size:24px; opacity:0.3;
-}
-.insight-item {
-  display:flex; gap:10px; margin-bottom:9px;
-  font-size:12px; color:rgba(253,246,227,0.8);
-  font-family:'Nanum Gothic',sans-serif; line-height:1.7;
-}
-.insight-item:last-child { margin-bottom:0; }
-.insight-bullet { color:var(--gold); flex-shrink:0; }
-
-/* 점수 바 */
-.score-section { margin:0 16px 16px; }
-.score-item { margin-bottom:12px; }
-.score-row-top {
-  display:flex; justify-content:space-between;
-  align-items:center; margin-bottom:5px;
-}
-.score-lbl { font-size:12px; color:var(--cream); display:flex; align-items:center; gap:6px; }
-.score-val { font-family:'Nanum Gothic',sans-serif; font-size:12px; font-weight:800; color:var(--gold2); }
-.score-track { height:4px; background:rgba(201,146,42,0.15); border-radius:2px; overflow:hidden; }
-.score-fill {
-  height:100%; border-radius:2px;
-  background:linear-gradient(90deg,var(--gold),var(--gold2));
-  width:0; transition:width 1.2s cubic-bezier(0.4,0,0.2,1);
-  box-shadow:0 0 8px rgba(201,146,42,0.4);
-}
-
-/* 리플레이 */
-.replay-section { padding:0 16px; }
-.btn-replay {
-  width:100%; background:transparent;
-  border:1.5px solid var(--gold); border-radius:4px;
-  padding:16px; font-family:'Jua',sans-serif;
-  font-size:15px; color:var(--gold2); cursor:pointer;
-  letter-spacing:3px; transition:background 0.2s;
-}
-.btn-replay:hover { background:rgba(201,146,42,0.1); }
-
-/* ══ 컷신 공통 ══ */
-.cutscene-center {
-  flex:1; display:flex; flex-direction:column;
-  align-items:center; justify-content:center;
-  padding:30px 24px; text-align:center; gap:16px;
-}
-.cutscene-emoji-row { font-size:64px; line-height:1; animation:floaty 2s ease-in-out infinite; }
-.cutscene-sub {
-  font-size:13px; color:rgba(253,246,227,0.6);
-  font-family:'Nanum Gothic',sans-serif; line-height:1.8; letter-spacing:0.5px;
-}
-.cutscene-main {
-  font-family:'Jua',sans-serif; font-size:20px;
-  color:var(--gold2); letter-spacing:1px;
-  text-shadow:0 0 20px rgba(240,192,96,0.3);
-}
-
-/* ══ 파티클 ══ */
-.confetti-item {
-  position:fixed; pointer-events:none; z-index:900;
-  font-size:16px;
-  animation:cfFall var(--d,3s) linear var(--dl,0s) both;
-}
-@keyframes cfFall{
-  0%  { transform:translateY(-20px) rotate(0);   opacity:1; }
-  85% { opacity:1; }
-  100%{ transform:translateY(105vh) rotate(540deg); opacity:0; }
-}
-.score-pop {
-  position:fixed; z-index:800;
-  top:38%; left:50%; transform:translateX(-50%) scale(0);
-  background:var(--gold); color:var(--ink);
-  font-family:'Jua',sans-serif; font-size:15px;
-  padding:10px 22px; border-radius:3px;
-  pointer-events:none; white-space:nowrap;
-  animation:sPop 1.4s ease forwards;
-  box-shadow:0 0 30px rgba(201,146,42,0.5);
-}
-@keyframes sPop{
-  0%  { transform:translateX(-50%) scale(0); opacity:1; }
-  20% { transform:translateX(-50%) scale(1.12); }
-  40% { transform:translateX(-50%) scale(1); opacity:1; }
-  80% { transform:translateX(-50%) scale(1); opacity:1; }
-  100%{ transform:translateX(-50%) scale(0.9); opacity:0; }
-}
+/* 이펙트 */
+.confetti-item{position:fixed;pointer-events:none;z-index:900;font-size:16px;animation:cfFall var(--d,3s) linear var(--dl,0s) both;}
+@keyframes cfFall{0%{transform:translateY(-20px) rotate(0);opacity:1;}85%{opacity:1;}100%{transform:translateY(105vh) rotate(540deg);opacity:0;}}
+.score-pop{position:fixed;z-index:800;top:38%;left:50%;transform:translateX(-50%) scale(0);background:var(--gold);color:var(--ink);font-family:'Jua',sans-serif;font-size:15px;padding:10px 22px;border-radius:3px;pointer-events:none;white-space:nowrap;animation:sPop 1.4s ease forwards;box-shadow:0 0 30px rgba(201,146,42,0.5);}
+@keyframes sPop{0%{transform:translateX(-50%) scale(0);opacity:1;}20%{transform:translateX(-50%) scale(1.12);}40%{transform:translateX(-50%) scale(1);opacity:1;}80%{transform:translateX(-50%) scale(1);opacity:1;}100%{transform:translateX(-50%) scale(0.9);opacity:0;}}
 </style>
 </head>
 <body>
 <div id="cover"></div>
 <div id="app">
 
-<!-- ════ 타이틀 ════ -->
+<!-- 타이틀 -->
 <div class="screen active" id="scr-title">
   <div class="title-deco-l">혁신</div>
   <div class="title-deco-r">이유식</div>
@@ -728,92 +205,81 @@ html, body { width:100%; height:100%; overflow:hidden; background:#2c1a0e; }
     <div class="info-row"><span class="info-ico">💡</span><span>재료마다 숨겨진 <span class="hi">가치의 이름</span>이 있어요</span></div>
     <div class="info-row"><span class="info-ico">😋</span><span>혁신이가 <span class="hi">만족할수록</span> 진짜 혁신에 가까워요</span></div>
   </div>
-  <button class="btn-gold" onclick="goIntro()" style="animation-delay:1.1s">시작하기 ▶</button>
-  <p style="margin-top:10px;font-size:9px;color:rgba(253,246,227,0.25);font-family:'Nanum Gothic',sans-serif;letter-spacing:1px">Demo v1.0 · Smilegate CCL</p>
+  <button class="btn-gold" onclick="goIntro()">시작하기 ▶</button>
+  <p style="margin-top:10px;font-size:9px;color:rgba(253,246,227,0.25);font-family:'Nanum Gothic',sans-serif;letter-spacing:1px">Demo v2.0 · Smilegate CCL</p>
 </div>
 
-<!-- ════ 인트로 씬 ════ -->
+<!-- 인트로 -->
 <div class="screen" id="scr-intro">
-  <div class="scene-top">
+  <div class="scene-top" style="height:240px">
     <div class="scene-bg-layer bg-home"></div>
-    <!-- SVG 배경: 할머니집 실루엣 -->
     <svg style="position:absolute;inset:0;z-index:1;width:100%;height:100%" viewBox="0 0 430 240" preserveAspectRatio="xMidYMax meet">
-      <!-- 창문 -->
       <rect x="30" y="40" width="70" height="50" rx="2" fill="none" stroke="rgba(201,146,42,0.12)" stroke-width="1.5"/>
       <line x1="65" y1="40" x2="65" y2="90" stroke="rgba(201,146,42,0.08)" stroke-width="1"/>
       <line x1="30" y1="65" x2="100" y2="65" stroke="rgba(201,146,42,0.08)" stroke-width="1"/>
-      <!-- 장롱 -->
       <rect x="300" y="50" width="100" height="130" rx="2" fill="none" stroke="rgba(201,146,42,0.1)" stroke-width="1.5"/>
       <line x1="350" y1="50" x2="350" y2="180" stroke="rgba(201,146,42,0.07)" stroke-width="1"/>
-      <!-- 바닥 -->
       <line x1="0" y1="210" x2="430" y2="210" stroke="rgba(201,146,42,0.15)" stroke-width="1.5"/>
     </svg>
     <div class="scene-chars">
       <span class="scene-char">👵</span>
-      <span class="scene-char right small" id="intro-baby" style="font-size:54px">👶</span>
+      <span class="scene-char right" style="font-size:54px">👶</span>
     </div>
   </div>
-  <div class="dialog-area" id="intro-dialog-area">
+  <div class="dialog-area">
     <div class="speaker-tab"><span class="spk-ico" id="intro-ico">🔔</span><span class="spk-nm" id="intro-spk">초인종</span></div>
-    <div class="dialog-box" id="intro-box" onclick="advIntro()">
+    <div class="dialog-box" onclick="advIntro()">
       <div class="dlg-txt" id="intro-txt">딩동—!</div>
       <div class="dlg-next" id="intro-next">화면을 탭하세요 ▼</div>
     </div>
   </div>
 </div>
 
-<!-- ════ 재료 창고 ════ -->
+<!-- 창고 -->
 <div class="screen" id="scr-pantry">
-  <div class="scene-top" style="height:160px">
+  <div class="scene-top" style="height:150px">
     <div class="scene-bg-layer bg-kitchen"></div>
-    <svg style="position:absolute;inset:0;z-index:1;width:100%;height:100%" viewBox="0 0 430 160" preserveAspectRatio="xMidYMax meet">
-      <rect x="0" y="120" width="430" height="40" rx="0" fill="rgba(60,30,10,0.4)"/>
-      <rect x="10" y="70" width="50" height="55" rx="2" fill="none" stroke="rgba(201,146,42,0.12)" stroke-width="1.2"/>
-      <rect x="75" y="80" width="40" height="45" rx="2" fill="none" stroke="rgba(201,146,42,0.1)" stroke-width="1"/>
-      <rect x="200" y="60" width="80" height="65" rx="2" fill="none" stroke="rgba(201,146,42,0.12)" stroke-width="1.2"/>
-      <rect x="300" y="75" width="120" height="50" rx="2" fill="none" stroke="rgba(201,146,42,0.1)" stroke-width="1"/>
+    <svg style="position:absolute;inset:0;z-index:1;width:100%;height:100%" viewBox="0 0 430 150" preserveAspectRatio="xMidYMax meet">
+      <rect x="0" y="115" width="430" height="35" rx="0" fill="rgba(60,30,10,0.4)"/>
+      <rect x="10" y="65" width="50" height="55" rx="2" fill="none" stroke="rgba(201,146,42,0.12)" stroke-width="1.2"/>
+      <rect x="75" y="75" width="40" height="45" rx="2" fill="none" stroke="rgba(201,146,42,0.1)" stroke-width="1"/>
+      <rect x="200" y="55" width="80" height="65" rx="2" fill="none" stroke="rgba(201,146,42,0.12)" stroke-width="1.2"/>
+      <rect x="300" y="70" width="120" height="50" rx="2" fill="none" stroke="rgba(201,146,42,0.1)" stroke-width="1"/>
     </svg>
     <div class="scene-chars" style="padding-bottom:4px">
-      <span class="scene-char small" style="font-size:48px">👵</span>
-      <span style="font-size:32px;animation:floaty 2s ease-in-out infinite 0.5s">🍳</span>
+      <span class="scene-char small" style="font-size:46px">👵</span>
+      <span style="font-size:30px;animation:floaty 2s ease-in-out infinite 0.5s">🍳</span>
     </div>
   </div>
-
   <div class="pantry-header">
     <div class="pantry-title">📦 집에 있는 재료들</div>
     <div class="pantry-sub">재료마다 이름이 적혀 있어요 — 이게 다 뭔지 모르겠지만 일단 살펴봐요</div>
   </div>
-
   <div class="pantry-grid" id="pantry-grid"></div>
-
   <div class="pantry-bottom">
     <div class="pantry-cry-notice" id="cry-notice" style="display:none">😭 혁신이가 울기 시작했어요!! 서두르세요!!!</div>
     <button class="btn-gold" id="pantry-btn" onclick="goCooking()" style="display:none">이유식 만들러 가기 🍼</button>
   </div>
 </div>
 
-<!-- ════ 이유식 제조 ════ -->
+<!-- 이유식 제조 -->
 <div class="screen" id="scr-cooking">
-  <div class="scene-top" style="height:130px">
+  <div class="scene-top" style="height:120px">
     <div class="scene-bg-layer bg-kitchen"></div>
     <div class="scene-chars" style="padding-bottom:4px">
-      <span class="scene-char small" style="font-size:48px">👵</span>
-      <span style="font-size:36px;animation:floaty 1.5s ease-in-out infinite">🫕</span>
-      <span style="font-size:24px;animation:floaty 1.8s ease-in-out infinite 0.4s">😭</span>
+      <span class="scene-char small" style="font-size:46px">👵</span>
+      <span style="font-size:34px;animation:floaty 1.5s ease-in-out infinite">🫕</span>
+      <span style="font-size:22px;animation:floaty 1.8s ease-in-out infinite 0.4s">😭</span>
     </div>
   </div>
-
   <div class="cooking-header">
     <div class="cooking-title">재료를 넣을까요, 말까요?</div>
     <div class="progress-row" id="cooking-progress"></div>
   </div>
-
-  <div class="cooking-stage" id="cooking-stage">
-    <!-- 재료 카드 동적 삽입 -->
-  </div>
+  <div class="cooking-stage" id="cooking-stage"></div>
 </div>
 
-<!-- ════ 컷신: 제조 & 먹이기 ════ -->
+<!-- 컷신 -->
 <div class="screen" id="scr-cutscene">
   <div class="scene-top" style="height:200px">
     <div class="scene-bg-layer" id="cutscene-bg"></div>
@@ -821,14 +287,14 @@ html, body { width:100%; height:100%; overflow:hidden; background:#2c1a0e; }
   </div>
   <div class="dialog-area">
     <div class="speaker-tab"><span class="spk-ico" id="cut-ico">👵</span><span class="spk-nm" id="cut-spk">할머니</span></div>
-    <div class="dialog-box" id="cut-box" onclick="advCutscene()">
+    <div class="dialog-box" onclick="advCutscene()">
       <div class="dlg-txt" id="cut-txt"></div>
       <div class="dlg-next" id="cut-next">화면을 탭하세요 ▼</div>
     </div>
   </div>
 </div>
 
-<!-- ════ 결과 ════ -->
+<!-- 결과 -->
 <div class="screen" id="scr-result">
   <div class="result-fixed-bg" id="result-fixed-bg"></div>
   <div class="result-scroll">
@@ -838,10 +304,8 @@ html, body { width:100%; height:100%; overflow:hidden; background:#2c1a0e; }
       <h2 class="result-title" id="r-title"></h2>
       <p class="result-sub" id="r-sub"></p>
     </div>
-
     <div class="baby-speech-section">
-      <div class="section-divider"></div>
-      <br>
+      <div class="section-divider"></div><br>
       <div class="eval-title">혁신이의 맛 평가 🗣️</div>
       <div class="baby-speech-card">
         <div class="baby-speech-header">
@@ -851,12 +315,10 @@ html, body { width:100%; height:100%; overflow:hidden; background:#2c1a0e; }
         <div class="baby-speech-txt" id="r-baby-speech"></div>
       </div>
     </div>
-
     <div class="eval-section">
       <div class="eval-title">재료별 분석</div>
       <div id="r-eval-list"></div>
     </div>
-
     <div class="score-section">
       <div class="eval-title">혁신 만족도</div>
       <div class="score-item">
@@ -872,12 +334,10 @@ html, body { width:100%; height:100%; overflow:hidden; background:#2c1a0e; }
         <div class="score-track"><div class="score-fill" id="sb-love"></div></div>
       </div>
     </div>
-
     <div class="insight-section">
       <div class="eval-title">이유식이 알려주는 혁신의 비밀 💡</div>
       <div class="insight-card" id="r-insight"></div>
     </div>
-
     <div class="replay-section">
       <button class="btn-replay" onclick="restartGame()">🔄 다시 만들어보기</button>
     </div>
@@ -887,35 +347,81 @@ html, body { width:100%; height:100%; overflow:hidden; background:#2c1a0e; }
 </div><!-- #app -->
 
 <script>
-/* ════════════════════════════════
-   재료 데이터베이스 (30개)
-   good: true = 이유식에 좋은 재료
-   good: false = 안 좋은 재료
-════════════════════════════════ */
+/* ════════════════════════════════════════
+   재료 데이터 (30개 — 제공 리스트 기반)
+   good: true  = 혁신에 긍정적 재료
+   good: false = 혁신에 부정적 재료
+   weight: 높을수록 자주 등장 (기본값 1)
+   required: true = 매판 반드시 등장
+════════════════════════════════════════ */
 const ALL_INGREDIENTS = [
-  // ── 좋은 재료 (혁신에 필요한 가치들) ──
-  { id:'curiosity',   emoji:'🥕', food:'당근',       value:'호기심',   good:true,  desc:'새로운 것을 탐구하고 싶어하는 마음. 혁신의 연료예요.' },
-  { id:'courage',     emoji:'🥦', food:'브로콜리',    value:'용기',     good:true,  desc:'변화를 시도하는 데 필요한 첫 번째 재료예요.' },
-  { id:'collab',      emoji:'🍗', food:'닭가슴살',    value:'협업',     good:true,  desc:'혼자가 아닌 함께 만들 때 더 맛있어져요.' },
-  { id:'execute',     emoji:'🍚', food:'쌀',          value:'실행력',   good:true,  desc:'아이디어만 있으면 배고프죠. 실천이 밥심이에요.' },
-  { id:'openness',    emoji:'🥑', food:'아보카도',    value:'개방성',   good:true,  desc:'새로운 방식을 받아들이는 열린 마음이에요.' },
-  { id:'patience',    emoji:'🥔', food:'감자',        value:'인내',     good:true,  desc:'천천히 끓여야 진국이 나오듯, 혁신도 때를 기다려요.' },
-  { id:'data',        emoji:'🫛', food:'완두콩',      value:'데이터',   good:true,  desc:'숫자와 근거로 말하면 아무도 무시 못 해요.' },
-  { id:'trust',       emoji:'🍠', food:'고구마',      value:'신뢰',     good:true,  desc:'달달하고 든든한 관계의 기본 재료예요.' },
-  { id:'humility',    emoji:'🧄', food:'마늘',        value:'겸손',     good:true,  desc:'냄새는 강하지만 빠지면 허전한 핵심 재료예요.' },
-  { id:'empathy',     emoji:'🫚', food:'참기름',      value:'공감',     good:true,  desc:'소통을 부드럽게 만드는 윤활유예요.' },
-  { id:'challenge',   emoji:'🌽', food:'옥수수',      value:'도전',     good:true,  desc:'밝고 노란 에너지. 시도 자체가 영양이에요.' },
-  { id:'creativity',  emoji:'🫐', food:'블루베리',    value:'창의성',   good:true,  desc:'작지만 강력한 항산화제. 고정관념을 녹여요.' },
+  /* ── 필수 3개 (매판 반드시 나옴) ── */
+  { id:'potato',    emoji:'🥔', food:'감자',        value:'관성',        good:false, required:true,
+    desc:'싹이 트면 독이 되듯, 변화 없이 기존 관행을 고수하며 혁신을 가로막는 고착화된 습성.' },
+  { id:'beef',      emoji:'🥩', food:'소고기',      value:'융합',        good:true,  required:true,
+    desc:'어떤 채소와도 조화를 이루듯, 서로 다른 역량을 하나로 모아 시너지를 내는 결합.' },
+  { id:'sprout',    emoji:'🌱', food:'새싹채소',    value:'New',         good:true,  required:true,
+    desc:'새로 돋아나는 신선한 새싹처럼, 기존의 틀을 깨고 조직에 새로운 활력을 불어넣는 신사업.' },
 
-  // ── 나쁜 재료 (혁신을 방해하는 것들) ──
-  { id:'fear',        emoji:'🥜', food:'땅콩',        value:'두려움',   good:false, desc:'아기에게 알레르기를 일으켜요. 혁신도 마비시켜요.' },
-  { id:'excuse',      emoji:'🧅', food:'양파',        value:'핑계',     good:false, desc:'눈물만 나오고 결국 아무것도 안 달라져요.' },
-  { id:'comfort',     emoji:'🍰', food:'케이크',      value:'현실안주', good:false, desc:'달달하지만 영양이 없어요. 이유식엔 절대 안 돼요.' },
-  { id:'blame',       emoji:'🌶', food:'청양고추',    value:'책임회피', good:false, desc:'너무 맵고 자극적이에요. 주변이 힘들어져요.' },
-  { id:'rigidity',    emoji:'🥩', food:'딱딱한 고기', value:'경직성',   good:false, desc:'아기가 씹을 수 없어요. 유연하지 못한 조직과 같아요.' },
-  { id:'gossip',      emoji:'🍟', food:'감자튀김',    value:'험담',     good:false, desc:'바삭한 것 같아도 기름지고 해로워요.' },
-  { id:'surrender',   emoji:'🥫', food:'통조림',      value:'포기',     good:false, desc:'방부제 가득. 성장을 멈추게 해요.' },
-  { id:'impatience',  emoji:'🍜', food:'라면',        value:'조급함',   good:false, desc:'빠르게 끓여서 자극적이에요. 혁신은 인스턴트가 아니에요.' },
+  /* ── 빈번 2개 (weight:3 — 3배 확률) ── */
+  { id:'broccoli',  emoji:'🥦', food:'브로콜리',    value:'소통',        good:true,  weight:3,
+    desc:'줄기와 송이가 촘촘히 연결된 구조처럼, 조직 구성원 간의 막힘 없는 수평적 대화.' },
+  { id:'banana',    emoji:'🍌', food:'바나나',      value:'공유',        good:true,  weight:3,
+    desc:'쉽게 으깨어져 다른 재료와 나누는 바나나처럼, 지식과 자산을 조직 전체가 함께 나누는 문화.' },
+
+  /* ── 일반 긍정 재료 ── */
+  { id:'chicken',   emoji:'🍗', food:'닭고기',      value:'초고도화',    good:true,
+    desc:'단백질을 미세하게 다져 흡수율을 높이듯, 기존 프로세스를 최고 수준으로 정밀하게 발전시키는 것.' },
+  { id:'rice',      emoji:'🍚', food:'쌀(미음)',    value:'기반',        good:true,
+    desc:'이유식의 가장 기본이 되는 쌀처럼, 모든 혁신 활동의 뼈대가 되는 견고한 인프라.' },
+  { id:'carrot',    emoji:'🥕', food:'당근',        value:'가시성',      good:true,
+    desc:'선명한 색으로 존재감을 드러내는 당근처럼, 데이터와 성과를 투명하게 시각화하여 공유하는 상태.' },
+  { id:'spinach',   emoji:'🥬', food:'시금치',      value:'회복탄력성',  good:true,
+    desc:'철분이 풍부해 성장을 돕는 시금치처럼, 실패 후 빠르게 에너지를 회복해 재도전하는 힘.' },
+  { id:'pumpkin',   emoji:'🎃', food:'단호박',      value:'유연성',      good:true,
+    desc:'익히면 부드럽게 으깨져 형태를 바꾸는 단호박처럼, 시장 변화에 맞춰 신속하게 전환하는 역량.' },
+  { id:'apple',     emoji:'🍎', food:'사과',        value:'다양성',      good:true,
+    desc:'품종과 맛이 다양한 사과처럼, 서로 다른 배경의 인재들이 모여 창의성을 발휘하는 환경.' },
+  { id:'fish',      emoji:'🐟', food:'흰살생선',    value:'Agile',       good:true,
+    desc:'지방이 적고 소화가 잘되는 흰살생선처럼, 복잡한 절차를 걷어내고 신속하게 움직이는 민첩한 구조.' },
+  { id:'mushroom',  emoji:'🍄', food:'표고버섯',    value:'전문성',      good:true,
+    desc:'깊은 풍미와 감칠맛을 더하는 표고버섯처럼, 조직의 장기적 성장을 지탱하는 핵심 기술력.' },
+  { id:'pear',      emoji:'🍐', food:'배',          value:'완화',        good:true,
+    desc:'목을 부드럽게 축여주는 배처럼, 혁신 과정에서 발생하는 갈등과 리스크를 해소하는 완충 작용.' },
+  { id:'tofu',      emoji:'🫙', food:'연두부',      value:'수용성',      good:true,
+    desc:'자극 없이 부드럽게 삼켜지는 연두부처럼, 새로운 기술이나 피드백을 거부감 없이 받아들이는 태도.' },
+  { id:'cabbage',   emoji:'🥗', food:'양배추',      value:'지속가능성',  good:true,
+    desc:'위를 보호하고 소화를 돕는 양배추처럼, 일회성 성과에 그치지 않고 장기적으로 지속되는 혁신 동력.' },
+  { id:'egg',       emoji:'🥚', food:'계란노른자',  value:'Empowerment', good:true,
+    desc:'핵심 영양소가 집약된 노른자처럼, 권한 위임을 통해 실무자에게 실질적인 힘을 지원하는 것.' },
+  { id:'sweetpot',  emoji:'🍠', food:'고구마',      value:'몰입',        good:true,
+    desc:'속을 든든하게 채워주는 고구마처럼, 구성원들이 비전에 공감하고 자발적으로 에너지를 쏟는 상태.' },
+
+  /* ── 일반 부정 재료 ── */
+  { id:'eggplant',  emoji:'🍆', food:'가지',        value:'호불호',      good:false,
+    desc:'선호가 극명히 갈리는 가지처럼, 조직 내 의견이 극단으로 나뉘어 합의를 이루지 못하는 양극화.' },
+  { id:'bokchoy',   emoji:'🥬', food:'청경채',      value:'퇴색',        good:false,
+    desc:'오래 데치면 색을 잃는 청경채처럼, 실행 과정에서 본래의 혁신 취지가 흐려지고 변질되는 현상.' },
+  { id:'beet',      emoji:'🫐', food:'비트',        value:'지표왜곡',    good:false,
+    desc:'소량으로도 주변을 붉게 물들이는 비트처럼, 실질적 성과 없이 겉포장만 화려한 보여주기식 성과주의.' },
+  { id:'avocado',   emoji:'🥑', food:'아보카도',    value:'진입장벽',    good:false,
+    desc:'딱딱한 껍질의 아보카도처럼, 새로운 아이디어나 외부 인재의 진입을 어렵게 만드는 폐쇄성.' },
+  { id:'seaweed',   emoji:'🫧', food:'미역',        value:'비대화',      good:false,
+    desc:'불리면 부피가 걷잡을 수 없이 커지는 미역처럼, 불필요한 보고 절차와 인력이 늘어나 효율이 떨어지는 현상.' },
+  { id:'shrimp',    emoji:'🍤', food:'새우',        value:'알레르기',    good:false,
+    desc:'강한 알레르기를 일으키는 새우처럼, 혁신 과제 도입 시 내부 구성원들이 보이는 강한 거부반응.' },
+  { id:'onion',     emoji:'🧅', food:'양파',        value:'은폐',        good:false,
+    desc:'까도 까도 속이 나오는 양파처럼, 고질적인 리스크나 실책을 투명하게 공개하지 않고 숨겨두는 폐폐함.' },
+  { id:'lotus',     emoji:'🪷', food:'연근',        value:'취약점',      good:false,
+    desc:'단면에 구멍이 숭숭 뚫린 연근처럼, 보안 시스템이나 업무 프로세스 상에 존재하는 치명적인 결함.' },
+  { id:'blueberry', emoji:'🫐', food:'블루베리',    value:'단편화',      good:false,
+    desc:'알알이 흩어진 블루베리처럼, 부서 간 협업 없이 각자의 이익만 추구하는 부서 이기주의.' },
+  { id:'paprika',   emoji:'🫑', food:'파프리카',    value:'번아웃',      good:false,
+    desc:'자주 먹으면 질릴 수 있는 파프리카처럼, 끊임없는 혁신 과제로 구성원들이 느끼는 정신적 피로.' },
+  { id:'zucchini',  emoji:'🥒', food:'애호박',      value:'정체',        good:false,
+    desc:'정해진 크기로만 자라는 애호박처럼, 시장은 변하는데 조직의 목표나 역량이 틀에 갇혀 머무르는 상태.' },
+  { id:'tomato',    emoji:'🍅', food:'토마토',      value:'미숙성',      good:false,
+    desc:'덜 익은 채 수확하면 맛을 해치듯, 준비 안 된 비즈니스 모델을 조기에 출시해 실패하는 조급함.' },
 ];
 
 /* ════════════════════════════════
@@ -925,24 +431,23 @@ let G = {
   sessionId: Math.random().toString(36).substr(2,8),
   startTime: Date.now(),
   logs: [],
-  shownIngredients: [],   // 이번 판 제시된 5개
-  chosen: [],             // 플레이어가 선택한 것들 (넣는다)
-  cookingIdx: 0,          // 현재 몇 번째 재료 선택 중
+  shownIngredients: [],
+  chosen: [],         // 넣는다 선택한 것들
+  notChosen: [],      // 안 넣는다 선택한 것들
+  cookingIdx: 0,
   introDlgIdx: 0,
-  cutDlgIdx: 0,
-  cutPhase: '',
+  cutIdx: 0,
 };
 
 /* ── 로그 ── */
-function log(msg, type='action'){
+function log(msg,type='action'){
   const t=new Date();
   const ts=[t.getHours(),t.getMinutes(),t.getSeconds()].map(n=>String(n).padStart(2,'0')).join(':');
   const e={ts,msg,type,sessionId:G.sessionId};
   G.logs.push(e);
   try{
     const s=JSON.parse(localStorage.getItem('sg_baby_logs')||'[]');
-    s.push(e);
-    localStorage.setItem('sg_baby_logs',JSON.stringify(s.slice(-400)));
+    s.push(e); localStorage.setItem('sg_baby_logs',JSON.stringify(s.slice(-400)));
   }catch(err){}
 }
 
@@ -955,8 +460,7 @@ function fade(cb){
 function showScreen(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   const el=document.getElementById(id);
-  el.classList.add('active');
-  el.scrollTop=0;
+  el.classList.add('active'); el.scrollTop=0;
 }
 
 /* ════════════════════════════════
@@ -968,15 +472,14 @@ function goIntro(){
   fade(()=>{ showScreen('scr-intro'); runIntroDlg(); });
 }
 
-/* ── 인트로 대화 데이터 ── */
-const INTRO_DLGS = [
-  {ico:'🔔', spk:'초인종',   txt:'<em>딩동—!</em>'},
-  {ico:'👨‍👩‍👦', spk:'자녀',   txt:'엄마! 갑자기 급한 일이 생겼어요!\n<b>혁신이</b> 좀 맡아주실 수 있어요?'},
-  {ico:'👵',  spk:'할머니',  txt:'어머, 그래야지. 근데 이유식은?'},
-  {ico:'👨‍👩‍👦', spk:'자녀',   txt:'냉장고에 재료 많으니까 알아서 해주세요!\n갈게요!! 🏃💨'},
-  {ico:'👵',  spk:'할머니',  txt:'...아니 어떻게 만드는 건지\n설명도 안 해주고 가면 어떡해!'},
-  {ico:'👶',  spk:'아기 혁신이', txt:'<em>(배고픈 것 같은 표정...)</em>'},
-  {ico:'👵',  spk:'할머니',  txt:'하이고, 일단 냉장고 열어봐야겠네.\n우리 혁신이 뭘 좋아하는지 알아야지...'},
+const INTRO_DLGS=[
+  {ico:'🔔',spk:'초인종',  txt:'<em>딩동—!</em>'},
+  {ico:'👨‍👩‍👦',spk:'자녀',   txt:'엄마! 갑자기 급한 일이 생겼어요!\n<b>혁신이</b> 좀 맡아주실 수 있어요?'},
+  {ico:'👵',spk:'할머니',  txt:'어머, 그래야지. 근데 이유식은?'},
+  {ico:'👨‍👩‍👦',spk:'자녀',   txt:'냉장고에 재료 많으니까 알아서 해주세요!\n갈게요!! 🏃💨'},
+  {ico:'👵',spk:'할머니',  txt:'...아니 어떻게 만드는 건지\n설명도 안 해주고 가면 어떡해!'},
+  {ico:'👶',spk:'아기 혁신이',txt:'<em>(배고픈 것 같은 표정...)</em>'},
+  {ico:'👵',spk:'할머니',  txt:'하이고, 일단 냉장고 열어봐야겠네.\n우리 혁신이 뭘 좋아하는지 알아야지...'},
 ];
 
 function runIntroDlg(){
@@ -989,58 +492,67 @@ function runIntroDlg(){
   if(isLast) setTimeout(goPantry,500);
 }
 function advIntro(){
-  if(G.introDlgIdx<INTRO_DLGS.length-1){
-    G.introDlgIdx++;
-    runIntroDlg();
-  }
+  if(G.introDlgIdx<INTRO_DLGS.length-1){ G.introDlgIdx++; runIntroDlg(); }
 }
 
 /* ════════════════════════════════
-   재료 창고 (팬트리)
+   창고 씬
 ════════════════════════════════ */
 function goPantry(){
-  fade(()=>{
-    showScreen('scr-pantry');
-    buildPantry();
-    // 3초 후 "혁신이 울기 시작" + 버튼 등장
-    setTimeout(()=>{
-      document.getElementById('cry-notice').style.display='block';
-      document.getElementById('pantry-btn').style.display='block';
-    }, 3000);
-  });
+  fade(()=>{ showScreen('scr-pantry'); buildPantry(); });
+  setTimeout(()=>{
+    document.getElementById('cry-notice').style.display='block';
+    document.getElementById('pantry-btn').style.display='block';
+  },3000);
 }
 
 function buildPantry(){
   const grid=document.getElementById('pantry-grid');
   grid.innerHTML='';
-  // 전체 재료 셔플해서 보여줌 (12개 표시)
-  const shuffled=[...ALL_INGREDIENTS].sort(()=>Math.random()-0.5).slice(0,12);
-
+  // 30개 전부 셔플해서 표시
+  const shuffled=[...ALL_INGREDIENTS].sort(()=>Math.random()-0.5);
   shuffled.forEach(ing=>{
     const card=document.createElement('div');
-    card.className='ingredient-card';
+    card.className='ingredient-card '+(ing.good?'good-card':'bad-card');
     card.innerHTML=`
       <span class="ing-emoji">${ing.emoji}</span>
       <span class="ing-food-name">${ing.food}</span>
       <span class="ing-value-name">${ing.value}</span>
     `;
     grid.appendChild(card);
-    // 랜덤 반짝임 애니메이션
-    card.style.animationDelay=`${Math.random()*1}s`;
   });
   log('창고 화면 진입');
 }
 
 /* ════════════════════════════════
-   이유식 제조 씬
+   제조 씬 — 재료 5개 선택
+   필수 3개(관성·융합·New) 반드시 포함
+   소통·공유 가중치 반영
 ════════════════════════════════ */
 function goCooking(){
-  // 이번 판 5개 재료 선택 (좋은 재료 3~4개 + 나쁜 재료 1~2개 섞기)
-  const good=[...ALL_INGREDIENTS.filter(i=>i.good)].sort(()=>Math.random()-0.5).slice(0,3);
-  const bad=[...ALL_INGREDIENTS.filter(i=>!i.good)].sort(()=>Math.random()-0.5).slice(0,2);
-  G.shownIngredients=[...good,...bad].sort(()=>Math.random()-0.5);
-  G.chosen=[];
-  G.cookingIdx=0;
+  // 1) 필수 재료 3개
+  const required = ALL_INGREDIENTS.filter(i=>i.required);
+
+  // 2) 나머지 풀에서 가중치 반영해 2개 추가 선택
+  const pool = [];
+  ALL_INGREDIENTS.filter(i=>!i.required).forEach(i=>{
+    const w = i.weight || 1;
+    for(let j=0;j<w;j++) pool.push(i);
+  });
+  // 셔플 후 중복 없이 2개
+  const shuffled = pool.sort(()=>Math.random()-0.5);
+  const extra = [];
+  const seen = new Set(required.map(i=>i.id));
+  for(const ing of shuffled){
+    if(!seen.has(ing.id)){ seen.add(ing.id); extra.push(ing); }
+    if(extra.length===2) break;
+  }
+
+  // 3) 5개 합쳐서 셔플
+  G.shownIngredients = [...required, ...extra].sort(()=>Math.random()-0.5);
+  G.chosen = [];
+  G.notChosen = [];
+  G.cookingIdx = 0;
   log('이유식 제조 시작');
   fade(()=>{ showScreen('scr-cooking'); renderCookingStage(); });
 }
@@ -1059,11 +571,8 @@ function renderCookingStage(){
   label.textContent=`${G.cookingIdx+1}/5`;
   prog.appendChild(label);
 
-  // 재료 카드
-  const stage=document.getElementById('cooking-stage');
   const ing=G.shownIngredients[G.cookingIdx];
-
-  stage.innerHTML=`
+  document.getElementById('cooking-stage').innerHTML=`
     <div class="stage-ingredient-card" id="stage-card">
       <span class="stage-ing-emoji">${ing.emoji}</span>
       <span class="stage-food-lbl">${ing.food}</span>
@@ -1084,122 +593,120 @@ function selectIngredient(put){
     log(`재료 선택: ${ing.value} (넣는다)`,'choice');
     spawnPop(`${ing.emoji} ${ing.value} 투입!`);
   } else {
+    G.notChosen.push(ing);
     log(`재료 선택: ${ing.value} (안 넣는다)`,'choice');
   }
-
   G.cookingIdx++;
   if(G.cookingIdx<5){
-    // 카드 사라지는 애니메이션 후 다음 재료
     const card=document.getElementById('stage-card');
     if(card){ card.style.transition='all 0.25s'; card.style.opacity='0'; card.style.transform='scale(0.85)'; }
     setTimeout(renderCookingStage,280);
   } else {
-    // 5개 완료 → 컷신
     setTimeout(startCutscene,300);
   }
 }
 
 /* ════════════════════════════════
-   컷신 (이유식 완성 + 먹이기)
+   컷신
 ════════════════════════════════ */
-const CUTSCENES = {
-  cook:[
-    {ico:'👵', spk:'할머니', bg:'bg-kitchen', chars:['👵','🫕'],
-     txt:'이제 넣은 재료들로 이유식을 만들어볼게.\n(두근두근 🤞)'},
-    {ico:'👵', spk:'할머니', bg:'bg-kitchen', chars:['👵','🍲'],
-     txt:'열심히 끓이고... 갈고...<br>냄새도 맡아보고...'},
-    {ico:'👵', spk:'할머니', bg:'bg-kitchen', chars:['👵','🥣'],
-     txt:'완성! 맛은 모르겠지만 정성은 담았다. 😤'},
-    {ico:'👵', spk:'할머니', bg:'bg-feeding', chars:['👵','👶'],
-     txt:'자 우리 혁신이, 할머니가 만든 이유식이야.<br>아— 아—! 🥄'},
-    {ico:'👶', spk:'아기 혁신이', bg:'bg-feeding', chars:['👵','👶'],
-     txt:'<em>(냠냠냠... 잠시 생각하는 표정...)</em>'},
-  ]
-};
-
-let cutQueue=[];
+const CUTSCENES=[
+  {ico:'👵',spk:'할머니',bg:'bg-kitchen',chars:['👵','🫕'],
+   txt:'이제 넣은 재료들로 이유식을 만들어볼게.\n(두근두근 🤞)'},
+  {ico:'👵',spk:'할머니',bg:'bg-kitchen',chars:['👵','🍲'],
+   txt:'열심히 끓이고... 갈고...<br>냄새도 맡아보고...'},
+  {ico:'👵',spk:'할머니',bg:'bg-kitchen',chars:['👵','🥣'],
+   txt:'완성! 맛은 모르겠지만 정성은 담았다. 😤'},
+  {ico:'👵',spk:'할머니',bg:'bg-feeding',chars:['👵','👶'],
+   txt:'자 우리 혁신이, 할머니가 만든 이유식이야.<br>아— 아—! 🥄'},
+  {ico:'👶',spk:'아기 혁신이',bg:'bg-feeding',chars:['👵','👶'],
+   txt:'<em>(냠냠냠... 잠시 생각하는 표정...)</em>'},
+];
 let cutIdx=0;
 
 function startCutscene(){
-  cutQueue=CUTSCENES.cook;
   cutIdx=0;
-  G.cutPhase='cook';
   fade(()=>{ showScreen('scr-cutscene'); runCut(); });
 }
-
 function runCut(){
-  if(cutIdx>=cutQueue.length){
-    // 결과로
-    showResult();
-    return;
-  }
-  const c=cutQueue[cutIdx];
+  if(cutIdx>=CUTSCENES.length){ showResult(); return; }
+  const c=CUTSCENES[cutIdx];
   document.getElementById('cut-ico').textContent=c.ico;
   document.getElementById('cut-spk').textContent=c.spk;
   document.getElementById('cut-txt').innerHTML=c.txt.replace(/\n/g,'<br>');
   document.getElementById('cutscene-bg').className='scene-bg-layer '+c.bg;
-
-  // 캐릭터
   const chars=document.getElementById('cutscene-chars');
   chars.innerHTML='';
   (c.chars||[]).forEach((e,i)=>{
     const el=document.createElement('span');
     el.className='scene-char'+(i>0?' right':'');
-    el.textContent=e;
-    el.style.animationDelay=(i*0.3)+'s';
+    el.textContent=e; el.style.animationDelay=(i*0.3)+'s';
     chars.appendChild(el);
   });
-
-  const isLast=cutIdx===cutQueue.length-1;
+  const isLast=cutIdx===CUTSCENES.length-1;
   document.getElementById('cut-next').style.display=isLast?'none':'flex';
   if(isLast) setTimeout(showResult,600);
 }
-
-function advCutscene(){
-  cutIdx++;
-  runCut();
-}
+function advCutscene(){ cutIdx++; runCut(); }
 
 /* ════════════════════════════════
-   결과 계산 & 표시
+   결과 계산 (버그 수정 버전)
+   
+   채점 기준:
+   - 좋은 재료를 넣었을 때: +점수
+   - 나쁜 재료를 넣었을 때: -점수
+   - 나쁜 재료를 안 넣었을 때: +점수 (현명한 제외!)
+   - 좋은 재료를 안 넣었을 때: 소폭 -점수
+   
+   만점 조건: 좋은 재료 전부 넣기 + 나쁜 재료 전부 제외
+   A등급: 75점 이상 / B등급: 50~74 / C등급: 49 이하
 ════════════════════════════════ */
 function calcResult(){
-  const chosen=G.chosen;
-  const goodChosen=chosen.filter(i=>i.good);
-  const badChosen=chosen.filter(i=>!i.good);
-  const goodCount=goodChosen.length;
-  const badCount=badChosen.length;
+  const shown  = G.shownIngredients;
+  const chosen = G.chosen;
+  const notChosen = G.notChosen;
 
-  // 점수 계산 (0~100)
-  const baseScore=goodCount*20 - badCount*15;
-  const taste=Math.max(10,Math.min(100, baseScore+Math.round(Math.random()*10)));
-  const nutr= Math.max(10,Math.min(100, goodCount*22 - badCount*10 + 10));
-  const love= Math.max(30,Math.min(100, 50 + chosen.length*8));
+  let score = 0;
+  let maxScore = 0;
 
-  const totalScore=(taste+nutr+love)/3;
+  shown.forEach(ing => {
+    const wasPut = chosen.some(c=>c.id===ing.id);
+    if(ing.good){
+      maxScore += 20;
+      if(wasPut)   score += 20;   // 좋은 재료 넣음 ✅
+      else         score += 0;    // 좋은 재료 안 넣음 (손해)
+    } else {
+      maxScore += 15;
+      if(!wasPut)  score += 15;   // 나쁜 재료 안 넣음 ✅ (현명한 판단!)
+      else         score -= 10;   // 나쁜 재료 넣음 ❌
+    }
+  });
 
-  let tier;
-  if(totalScore>=75)      tier='A';
-  else if(totalScore>=55) tier='B';
-  else                    tier='C';
+  // 0~100 정규화
+  const normalized = Math.max(0, Math.min(100, Math.round((score / maxScore) * 100)));
 
-  log(`결과: ${tier}등급 (taste${taste} nutr${nutr} love${love})`,'result');
-  return { goodChosen, badChosen, chosen, taste, nutr, love, tier };
+  // 맛/영양/정성 — 각각 살짝 변동
+  const taste = Math.max(10, Math.min(100, normalized + Math.round((Math.random()-0.5)*8)));
+  const nutr  = Math.max(10, Math.min(100, normalized + Math.round((Math.random()-0.5)*8)));
+  const love  = Math.max(40, Math.min(100, normalized + 10));  // 정성은 조금 더 관대하게
+
+  const tier = normalized >= 75 ? 'A' : normalized >= 50 ? 'B' : 'C';
+  log(`결과: ${tier}등급 점수:${normalized}점 (taste:${taste} nutr:${nutr} love:${love})`,'result');
+  return { shown, chosen, notChosen, taste, nutr, love, tier, score: normalized };
 }
 
-const RESULTS={
+const RESULTS = {
   A:{
     emoji:'😍', rank:'대만족 ✨',
     title:'혁신이가 그릇을 핥았습니다!',
     sub:'완벽한 이유식이에요!\n할머니 솜씨가 보통이 아니시네요. 👏',
     babyIco:'😍',
-    babySpeech:'<b>냐아아아— 냠냠냠!!</b><br>이거 뭔지 모르지만 너무 맛있어!<br>재료들이 딱 <em class="g">균형있게</em> 들어갔고,<br>쓴맛 나는 것도 없어서 완벽해요! 🍼✨',
+    babySpeech:'<b>냐아아아— 냠냠냠!!</b><br>이거 뭔지 모르지만 너무 맛있어!<br>재료들이 딱 <span class="g">균형있게</span> 들어갔고,<br>이상한 맛도 하나도 없어서 완벽해요! 🍼✨',
     bg:'bg-success',
     insights:[
-      '호기심·용기·실행력이 함께할 때 혁신이 맛있어집니다',
-      '두려움과 현실안주는 혁신의 맛을 망치는 알레르기 재료예요',
-      '혼자가 아닌 협업의 재료가 들어갈 때 더 풍부해져요',
-      '작은 도전들이 모여 진짜 혁신의 밥상이 완성됩니다',
+      '융합·소통·공유가 함께할 때 혁신이 맛있어집니다',
+      '관성은 넣으면 안 되는 독재료 — 과감히 제외해야 해요',
+      'New(새로움)는 혁신 이유식의 핵심 영양소예요',
+      '좋은 재료를 고르는 것만큼, 나쁜 재료를 제외하는 눈도 중요합니다',
     ]
   },
   B:{
@@ -1207,13 +714,13 @@ const RESULTS={
     title:'조금 찡그리긴 했는데\n그래도 먹었어요',
     sub:'절반의 성공이에요!\n좋은 재료도 있었지만, 아쉬운 것도 있었네요.',
     babyIco:'😶',
-    babySpeech:'<b>냠... 음... 냠냠...</b><br>맛있는 것도 있고 이상한 것도 있어요.<br><em>조금 맵거나 쓴 게</em> 들어간 것 같은데...<br>그래도 할머니 정성은 느껴져요! 😅',
+    babySpeech:'<b>냠... 음... 냠냠...</b><br>맛있는 것도 있고 이상한 것도 있어요.<br><em>조금 쓰거나 이상한 게</em> 들어간 것 같은데...<br>그래도 할머니 정성은 느껴져요! 😅',
     bg:'bg-meeting',
     insights:[
-      '좋은 재료가 있어도 나쁜 재료가 맛을 흐릴 수 있어요',
-      '혁신에서 두려움과 핑계는 조금만 들어가도 전체를 망쳐요',
-      '균형이 중요해요 — 좋은 것들의 조합을 더 신경써보세요',
-      '다음엔 불필요한 재료를 과감히 빼보세요!',
+      '좋은 재료가 있어도 나쁜 재료 하나가 맛을 흐려요',
+      '관성(감자)은 이유식에 넣는 순간 독이 됩니다',
+      '소통과 공유는 빠지면 아쉬운 핵심 재료예요',
+      '다음엔 제외할 재료를 더 꼼꼼히 살펴보세요!',
     ]
   },
   C:{
@@ -1221,73 +728,61 @@ const RESULTS={
     title:'혁신이가 그릇을 던졌습니다',
     sub:'아이고... 혁신이가 화났어요.\n괜찮아요, 다시 도전해보세요!',
     babyIco:'😡',
-    babySpeech:'<b>으아아아아— 😭😭😭</b><br>이건 못 먹겠어요!!<br><em>쓰고 맵고 이상한 것</em>들이 너무 많아요!<br>이유식에 <em>라면이나 청양고추</em>가 왜 들어가요!!',
+    babySpeech:'<b>으아아아아— 😭😭😭</b><br>이건 못 먹겠어요!!<br><em>이상한 것들</em>이 너무 많아요!<br>관성(감자)을 왜 넣어요!! 이유식이잖아요!!',
     bg:'bg-fail',
     insights:[
-      '두려움·포기·조급함이 많을수록 혁신이 불가능해져요',
-      '혁신은 편한 것들(현실안주, 핑계)을 과감히 제거해야 해요',
-      '작은 나쁜 재료 하나가 전체를 망칩니다 — 경직성을 주의하세요',
+      '관성·단편화·은폐가 많을수록 혁신이 불가능해져요',
+      '좋은 재료(융합·New·소통)가 빠지면 혁신이 텅 비어요',
+      '현명한 혁신가는 넣을 것보다 뺄 것을 먼저 봅니다',
       '처음부터 다시! 좋은 재료로만 꽉꽉 채워보세요 💪',
     ]
   }
 };
 
 function showResult(){
-  const res=calcResult();
-  const tier=RESULTS[res.tier];
+  const res = calcResult();
+  const tier = RESULTS[res.tier];
 
-  document.getElementById('r-emoji').textContent=tier.emoji;
-  document.getElementById('r-rank').textContent=tier.rank;
-  document.getElementById('r-title').innerHTML=tier.title.replace('\n','<br>');
-  document.getElementById('r-sub').textContent=tier.sub;
-  document.getElementById('result-fixed-bg').className='result-fixed-bg scene-bg-layer story-bg '+tier.bg;
+  document.getElementById('r-emoji').textContent      = tier.emoji;
+  document.getElementById('r-rank').textContent       = tier.rank;
+  document.getElementById('r-title').innerHTML        = tier.title.replace('\n','<br>');
+  document.getElementById('r-sub').textContent        = tier.sub;
+  document.getElementById('result-fixed-bg').className = 'result-fixed-bg scene-bg-layer story-bg '+tier.bg;
+  document.getElementById('r-baby-ico').textContent   = tier.babyIco;
+  document.getElementById('r-baby-speech').innerHTML  = tier.babySpeech;
 
-  // 아기 멘트
-  document.getElementById('r-baby-ico').textContent=tier.babyIco;
-  document.getElementById('r-baby-speech').innerHTML=tier.babySpeech;
-
-  // 재료 평가
-  const evalList=document.getElementById('r-eval-list');
-  evalList.innerHTML='';
-
-  // 사용한 재료 + 사용 안 한 나쁜 재료 중 주목할 것들
-  const allShown=G.shownIngredients;
-  allShown.forEach(ing=>{
-    const used=G.chosen.some(c=>c.id===ing.id);
+  /* 재료별 평가 */
+  const evalList = document.getElementById('r-eval-list');
+  evalList.innerHTML = '';
+  res.shown.forEach(ing=>{
+    const wasPut = res.chosen.some(c=>c.id===ing.id);
     let cardType, tagType, tagTxt, comment;
-
-    if(used && ing.good){
+    if(wasPut && ing.good){
       cardType='good'; tagType='good-tag'; tagTxt='✅ 좋은 선택';
       comment=`"${ing.value}"은 이유식의 핵심 영양소예요. ${ing.desc}`;
-    } else if(used && !ing.good){
+    } else if(wasPut && !ing.good){
       cardType='bad'; tagType='bad-tag'; tagTxt='❌ 혁신 알레르기!';
       comment=`"${ing.value}"은 넣으면 안 돼요! ${ing.desc}`;
-    } else if(!used && ing.good){
+    } else if(!wasPut && ing.good){
       cardType='neutral'; tagType='not-used'; tagTxt='⚠️ 빠진 영양소';
       comment=`"${ing.value}"을 빼셨군요. ${ing.desc}`;
     } else {
       cardType='good'; tagType='good-tag'; tagTxt='✅ 현명한 제외';
-      comment=`"${ing.value}"은 안 넣는 게 맞아요! ${ing.desc}`;
+      comment=`"${ing.value}"을 안 넣은 건 탁월한 선택! ${ing.desc}`;
     }
-
     const el=document.createElement('div');
     el.className=`eval-card ${cardType}`;
     el.innerHTML=`
       <span class="eval-ico">${ing.emoji}</span>
       <div class="eval-body">
-        <div class="eval-name">
-          ${ing.value}
-          <span class="eval-tag ${tagType}">${tagTxt}</span>
-        </div>
+        <div class="eval-name">${ing.value}<span class="eval-tag ${tagType}">${tagTxt}</span></div>
         <div class="eval-comment">${comment}</div>
-      </div>
-    `;
+      </div>`;
     evalList.appendChild(el);
   });
 
-  // 인사이트
-  const insightCard=document.getElementById('r-insight');
-  insightCard.innerHTML=tier.insights.map(t=>
+  /* 인사이트 */
+  document.getElementById('r-insight').innerHTML = tier.insights.map(t=>
     `<div class="insight-item"><span class="insight-bullet">▸</span><span>${t}</span></div>`
   ).join('');
 
@@ -1305,48 +800,32 @@ function showResult(){
 function animScore(barId,numId,pct){
   document.getElementById(barId).style.width=pct+'%';
   let c=0; const el=document.getElementById(numId);
-  const iv=setInterval(()=>{
-    c+=2; if(c>=pct){c=pct;clearInterval(iv);}
-    el.textContent=c+'%';
-  },18);
+  const iv=setInterval(()=>{ c+=2; if(c>=pct){c=pct;clearInterval(iv);} el.textContent=c+'%'; },18);
 }
 
-/* ════════════════════════════════
-   이펙트
-════════════════════════════════ */
+/* ── 이펙트 ── */
 function spawnPop(msg){
-  const el=document.createElement('div');
-  el.className='score-pop'; el.textContent=msg;
-  document.body.appendChild(el);
-  setTimeout(()=>el.remove(),1500);
+  const el=document.createElement('div'); el.className='score-pop'; el.textContent=msg;
+  document.body.appendChild(el); setTimeout(()=>el.remove(),1500);
 }
 function spawnConfetti(){
   const emojis=['🎉','✨','🍼','👶','⭐','💡','🏆','🌟'];
-  for(let i=0;i<22;i++){
-    const c=document.createElement('div');
-    c.className='confetti-item';
+  for(let i=0;i<24;i++){
+    const c=document.createElement('div'); c.className='confetti-item';
     c.textContent=emojis[i%emojis.length];
     c.style.cssText=`left:${Math.random()*100}%;--d:${(2+Math.random()*2).toFixed(1)}s;--dl:${(Math.random()*1.2).toFixed(1)}s`;
-    document.body.appendChild(c);
-    setTimeout(()=>c.remove(),4500);
+    document.body.appendChild(c); setTimeout(()=>c.remove(),4500);
   }
 }
 
-/* ════════════════════════════════
-   리스타트
-════════════════════════════════ */
+/* ── 리스타트 ── */
 function restartGame(){
-  G={
-    sessionId:Math.random().toString(36).substr(2,8),
-    startTime:Date.now(), logs:[],
-    shownIngredients:[], chosen:[],
-    cookingIdx:0, introDlgIdx:0, cutDlgIdx:0, cutPhase:'',
-  };
+  G={ sessionId:Math.random().toString(36).substr(2,8), startTime:Date.now(), logs:[],
+      shownIngredients:[], chosen:[], notChosen:[], cookingIdx:0, introDlgIdx:0, cutIdx:0 };
   log(`[세션 ${G.sessionId}] 재시작`,'restart');
   fade(()=>showScreen('scr-title'));
 }
 
-/* ── 초기화 ── */
 log(`[세션 ${G.sessionId}] 앱 로드`,'system');
 </script>
 </body>
