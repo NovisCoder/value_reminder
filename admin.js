@@ -46,7 +46,7 @@ function renderAdmin(logs){
   // CLU1~CLU10 각 선택값 추출 함수
   function getChoiceForClu(l, cluNum){
     var ch = typeof l.choices === 'string' ? JSON.parse(l.choices||'{}') : (l.choices||{});
-    var key = String(cluNum);
+    var key = cluNum < 10 ? '0' + cluNum : String(cluNum);
     if(ch[key] === undefined) return '-';
     var score = ch[key] && ch[key].score > 0;
     return score ? '혁신O' : '혁신X';
