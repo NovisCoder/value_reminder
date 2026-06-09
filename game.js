@@ -414,27 +414,18 @@ function doSubmit(){
  
 // ── 점수 계산 ──
 function calcResult(){
-  var correct=0, wrong=0;
-  Object.values(G.collected).forEach(function(c){ if(c.correct)correct++; else wrong++; });
-  var p1 = correct*3 - wrong*1;
-  if(wrong===0) p1 += 3;
-  p1 = Math.max(0, Math.min(30, p1));
- 
-  var p2=0, traps=0, phxOk=false;
+  var p2=0, traps=0;
   Object.entries(G.choices).forEach(function(e){
-    var id=e[0], ch=e[1];
+    var ch=e[1];
     p2 += ch.score;
     if(ch.score===0) traps++;
-    if(id==='06' && ch.score===6) phxOk=true;
   });
   p2 = Math.min(60, p2);
  
-  var bonus=0, pen=0;
-  if(phxOk) bonus+=5;
+  var pen=0;
   if(traps>=4) pen+=5;
-  if(wrong>=5) pen+=3;
-  var total = Math.max(0, Math.min(100, p1+p2+bonus-pen));
-  var grade = total>=85?'S':total>=70?'A':total>=50?'B':total>=30?'C':'D';
+  var total = Math.max(0, Math.min(60, p2-pen));
+  var grade = total>=54?'S':total>=42?'A':total>=30?'B':total>=18?'C':'D';
  
   saveLog(total, grade);
  
@@ -456,7 +447,7 @@ function calcResult(){
  
   document.getElementById('r-grade').textContent = grade;
   document.getElementById('r-grade').style.color = gColors[grade];
-  document.getElementById('r-score').textContent = total+'점 / 100점';
+  document.getElementById('r-score').textContent = total+'점 / 60점';
   document.getElementById('r-title').textContent = gTitles[grade];
   document.getElementById('r-body').textContent = gBodies[grade];
  
