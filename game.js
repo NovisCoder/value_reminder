@@ -7,7 +7,7 @@ function show(id){
   document.querySelectorAll('.scr').forEach(function(s){s.classList.remove('on');});
   document.getElementById(id).classList.add('on');
 }
-
+ 
 // ── 인트로 → 브리핑 ──
 function startGame(){
   var nm = document.getElementById('inp-name').value.trim();
@@ -18,7 +18,7 @@ function startGame(){
   show('s-brief');
   runBrief();
 }
-
+ 
 function runBrief(){
   var ids=['bc0','bc1','bc2','bc3','bc4','bc5','bc6'];
   ids.forEach(function(id,i){
@@ -26,15 +26,15 @@ function runBrief(){
   });
   setTimeout(function(){ document.getElementById('brief-go').style.display='block'; }, 400 + ids.length*800 + 500);
 }
-
+ 
 // ── 방탈출 이동 ──
 function gotoR1(){ show('s-r1'); updateDots(); }
 function gotoR2(){ show('s-r2'); updateDots(); checkMeetBtn(); }
-
+ 
 function correctCount(){
   return Object.values(G.collected).filter(function(c){ return c.correct; }).length;
 }
-
+ 
 function updateDots(){
   var cnt = correctCount();
   ['dr1','dr2'].forEach(function(did){
@@ -47,7 +47,7 @@ function updateDots(){
   document.getElementById('cnt1').textContent = cnt;
   document.getElementById('cnt2').textContent = cnt;
 }
-
+ 
 function checkMeetBtn(){
   var ok = correctCount() >= 10;
   var mw1 = document.getElementById('meet-wrap-r1');
@@ -55,7 +55,7 @@ function checkMeetBtn(){
   if(mw1) mw1.style.display = ok ? 'block' : 'none';
   if(mw2) mw2.style.display = ok ? 'block' : 'none';
 }
-
+ 
 // ── 팝업 열기 ──
 function openPop(id, room){
   if(G.collected[id]) return;
@@ -70,18 +70,18 @@ function openPop(id, room){
   body.className = 'pop-body' + (isC ? '' : ' w');
   document.getElementById(ovId).style.display = 'flex';
 }
-
+ 
 function closePop(room){
   document.getElementById('ov'+room).style.display = 'none';
   G.activePop = null;
 }
-
+ 
 function collect(room){
   if(!G.activePop) return;
   var id = G.activePop;
   var cl = CLUES[id];
   closePop(room);
-
+ 
   if(cl.correct){
     G.collected[id] = {correct:true, ts:Date.now(), room:room};
     var hs = document.getElementById('h-'+id);
@@ -102,7 +102,7 @@ function collect(room){
     checkMeetBtn();
   } else {
     var msgs = [
-      '과연 이걸로\n소울컴퍼니가 무너질까?',
+      '과연 이걸로\n킨더조이가 무너질까?',
       '이걸로 충분할까...',
       '다시 한번 생각해보자'
     ];
@@ -117,7 +117,7 @@ function collect(room){
     }
   }
 }
-
+ 
 // ── 빅보스 씬 ──
 var BOSS = [
   {t:'line', tx:'어두운 주차장. 검은 차 안.'},
@@ -132,7 +132,7 @@ var BOSS = [
   {t:'line', tx:'눈을 가린다. 소리를 지른다.', red:true},
   {t:'next', go:'awake'}
 ];
-
+ 
 function gotoBoss(){
   G.bossStep = 0;
   document.getElementById('boss-lines').innerHTML = '';
@@ -143,13 +143,13 @@ function gotoBoss(){
   show('s-boss');
   addBossStep();
 }
-
+ 
 function addBossStep(){
   var step = BOSS[G.bossStep];
   if(!step) return;
   if(step.t === 'next'){ startAwake(); return; }
   var el = document.getElementById('boss-lines');
-
+ 
   if(step.t === 'switch-gun'){
     var meet = document.getElementById('boss-img-meet');
     var gun  = document.getElementById('boss-img-gun');
@@ -177,12 +177,12 @@ function addBossStep(){
     el.appendChild(sp);
   }
 }
-
+ 
 function nextBoss(){
   G.bossStep++;
   addBossStep();
 }
-
+ 
 // ── 각성 씬 ──
 var AWAKE = [
   {t:'glitch'},
@@ -199,21 +199,21 @@ var AWAKE = [
   {t:'line', tx:'"자, 정신 차리고 다시 의사결정을 해볼까?\n킨더조이 대표로서!"', white:true},
   {t:'next'}
 ];
-
+ 
 function startAwake(){
   G.awakeStep = 0;
   document.getElementById('awake-lines').innerHTML = '';
   show('s-awake');
   addAwakeStep();
 }
-
+ 
 function addAwakeStep(){
   var step = AWAKE[G.awakeStep];
   if(!step) return;
   if(step.t === 'next'){ startP2(); return; }
   var el = document.getElementById('awake-lines');
   el.innerHTML = '';
-
+ 
   if(step.t === 'glitch'){
     var g = document.createElement('div');
     g.className='glitch'; g.setAttribute('data-t','BLACKSITE'); g.textContent='BLACKSITE';
@@ -224,36 +224,36 @@ function addAwakeStep(){
     el.appendChild(s);
     var n1=document.createElement('div'); n1.className='noise'; el.appendChild(n1);
     var n2=document.createElement('div'); n2.className='noise'; n2.style.opacity='.4'; el.appendChild(n2);
-
+ 
   } else if(step.t === 'sil'){
     var d=document.createElement('div'); d.className='cl on'; d.textContent='. . .'; el.appendChild(d);
-
+ 
   } else if(step.t === 'room-reveal'){
     var bg = document.getElementById('awake-cin');
     bg.style.backgroundImage = 'linear-gradient(rgba(0,0,0,.6),rgba(0,0,0,.6)), url('+document.querySelector('#s-p2 .room img').src+')';
     bg.style.backgroundSize = 'cover';
     bg.style.backgroundPosition = 'center';
     var d=document.createElement('div'); d.className='cl on'; d.style.color='rgba(255,255,255,.6)'; d.style.fontSize='12px'; d.textContent='[ KINDERJOY CEO OFFICE ]'; el.appendChild(d);
-
+ 
   } else if(step.t === 'line'){
     var d=document.createElement('div');
     d.className='cl on em'; d.style.whiteSpace='pre-line'; d.textContent=step.tx;
     if(step.white) d.style.color='#fff'; else d.style.color='rgba(255,255,255,.8)';
     el.appendChild(d);
-
+ 
   } else if(step.t === 'dlg-cat'){
     var cin = document.getElementById('awake-cin');
     cin.style.backgroundImage = '';
     cin.style.backgroundColor = '#000';
-
+ 
     var wrap = document.createElement('div');
     wrap.className = 'cat-wrap';
-
+ 
     var img = document.createElement('img');
     img.className = 'cat-img ' + (step.img==='smile' ? 'img-cat-smile' : 'img-cat-surp');
     img.alt = step.img==='smile' ? '웃는 고양이 비서' : '놀란 고양이 비서';
     wrap.appendChild(img);
-
+ 
     var overlay = document.createElement('div');
     overlay.className = 'cat-dialog-overlay';
     var box = document.createElement('div');
@@ -262,9 +262,9 @@ function addAwakeStep(){
     box.innerHTML = '<div class="dlg-sp">' + step.sp + '</div><div class="dlg-tx">' + step.tx + '</div>';
     overlay.appendChild(box);
     wrap.appendChild(overlay);
-
+ 
     el.appendChild(wrap);
-
+ 
   } else if(step.t === 'cat-exit'){
     var d=document.createElement('div');
     d.className='cl on em'; d.style.color='rgba(255,255,255,.45)'; d.style.fontSize='12px';
@@ -273,12 +273,12 @@ function addAwakeStep(){
     document.getElementById('awake-tap').style.display='block';
   }
 }
-
+ 
 function nextAwake(){
   G.awakeStep++;
   addAwakeStep();
 }
-
+ 
 // ── 2페이즈 ──
 function startP2(){
   G.p2Queue = Object.keys(G.collected).filter(function(id){return G.collected[id].correct;});
@@ -288,7 +288,7 @@ function startP2(){
   document.getElementById('p2-badge').textContent = '0/'+G.p2Queue.length;
   document.getElementById('p2-txt').textContent = '과제를 선택해 해결 방법을 결정하세요';
 }
-
+ 
 function buildP2Grid(){
   var grid = document.getElementById('p2-grid');
   grid.innerHTML = '';
@@ -320,21 +320,21 @@ function buildP2Grid(){
     grid.appendChild(card);
   });
 }
-
+ 
 function openP2Clue(id){
   var card = document.getElementById('p2-card-'+id);
   if(card) card.style.animation = 'none';
-
+ 
   var cl = CLUES[id];
   document.getElementById('pp2-tag').textContent = cl.tag;
   document.getElementById('pp2-q').textContent = cl.q;
   document.getElementById('pp2-body').textContent = cl.real;
-
+ 
   var list = document.getElementById('pp2-choices');
   list.innerHTML = '';
-
+ 
   var prev = G.choices[id];
-
+ 
   cl.choices.forEach(function(ch, i){
     var btn = document.createElement('button');
     btn.className = 'ch-btn' + (prev && prev.idx===i ? (ch.s>0?' sel':' trap') : '');
@@ -357,10 +357,10 @@ function openP2Clue(id){
     };})(id, i, ch.s);
     list.appendChild(btn);
   });
-
+ 
   document.getElementById('ov-p2').style.display='flex';
 }
-
+ 
 function updateP2Card(id, choiceIdx, score){
   var status = document.getElementById('p2-status-'+id);
   var card = document.getElementById('p2-card-'+id);
@@ -370,7 +370,7 @@ function updateP2Card(id, choiceIdx, score){
   card.style.borderColor = 'rgba(0,255,136,.4)';
   card.style.animation = 'none';
 }
-
+ 
 function revealP2Results(){
   G.p2Queue.forEach(function(id){
     var ch = G.choices[id];
@@ -389,7 +389,7 @@ function revealP2Results(){
     }
   });
 }
-
+ 
 function updateP2Progress(){
   var done = Object.keys(G.choices).length;
   var total = G.p2Queue.length;
@@ -401,17 +401,17 @@ function updateP2Progress(){
     }, 600);
   }
 }
-
+ 
 function closeSubmitPop(){
   document.getElementById('ov-submit').style.display='none';
 }
-
+ 
 function doSubmit(){
   document.getElementById('ov-submit').style.display='none';
   revealP2Results();
   setTimeout(calcResult, 800);
 }
-
+ 
 // ── 점수 계산 ──
 function calcResult(){
   var correct=0, wrong=0;
@@ -419,7 +419,7 @@ function calcResult(){
   var p1 = correct*3 - wrong*1;
   if(wrong===0) p1 += 3;
   p1 = Math.max(0, Math.min(30, p1));
-
+ 
   var p2=0, traps=0, phxOk=false;
   Object.entries(G.choices).forEach(function(e){
     var id=e[0], ch=e[1];
@@ -428,16 +428,16 @@ function calcResult(){
     if(id==='06' && ch.score===6) phxOk=true;
   });
   p2 = Math.min(60, p2);
-
+ 
   var bonus=0, pen=0;
   if(phxOk) bonus+=5;
   if(traps>=4) pen+=5;
   if(wrong>=5) pen+=3;
   var total = Math.max(0, Math.min(100, p1+p2+bonus-pen));
   var grade = total>=85?'S':total>=70?'A':total>=50?'B':total>=30?'C':'D';
-
+ 
   saveLog(total, grade);
-
+ 
   var gColors = {S:'#9E4AE7',A:'#00cc66',B:'#F5A623',C:'#ff8c42',D:'#E8192C'};
   var gTitles = {
     S:'혁신 리더의 탄생',
@@ -453,22 +453,22 @@ function calcResult(){
     C: '소울컴퍼니는 \'올해의 기업\'으로 선정되었습니다. 킨더조이는 주가 하락과 시장 점유율 감소를 기록 중입니다. 합리적으로 보이는 함정을 반복해서 선택한 결과입니다.',
     D: '소울컴퍼니는 \'올해의 기업\'으로 선정되며 눈부신 성과를 달성했고, 한편 쌍두마차였던 킨더조이는 경영난을 극복하지 못하고 상장폐지 위기에 놓였습니다.'
   };
-
+ 
   document.getElementById('r-grade').textContent = grade;
   document.getElementById('r-grade').style.color = gColors[grade];
   document.getElementById('r-score').textContent = total+'점 / 100점';
   document.getElementById('r-title').textContent = gTitles[grade];
   document.getElementById('r-body').textContent = gBodies[grade];
-
+ 
   var extra = document.getElementById('r-extra');
   if(grade==='D' && traps>=4){
     extra.style.display='block';
     extra.textContent='당신이 선택한 방법들은 — Kodak, Nokia, Blockbuster의 경영진도 같은 논리로 선택했습니다.';
   } else { extra.style.display='none'; }
-
+ 
   show('s-result');
 }
-
+ 
 // ── 로그 저장 (Supabase 연동) ──
 function saveLog(score, grade){
   var logData = {
@@ -480,7 +480,7 @@ function saveLog(score, grade){
     score: score,
     grade: grade
   };
-
+ 
   // Supabase에 저장
   fetch(SUPABASE_URL + '/rest/v1/ktc_logs', {
     method: 'POST',
@@ -493,7 +493,7 @@ function saveLog(score, grade){
     body: JSON.stringify(logData)
   }).catch(function(e){ console.warn('Supabase 저장 실패:', e); });
 }
-
+ 
 // ── 다시하기 ──
 function restartAll(){
   G = {name:'',startTime:0,collected:{},choices:{},activePop:null,activeRoom:0,bossStep:0,awakeStep:0,p2Queue:[],p2Cursor:0};
@@ -521,7 +521,7 @@ function restartAll(){
   document.getElementById('r-extra').style.display='none';
   show('s-intro');
 }
-
+ 
 function restartP2(){
   G.choices={};
   G.p2Queue = Object.keys(G.collected).filter(function(id){return G.collected[id].correct;});
