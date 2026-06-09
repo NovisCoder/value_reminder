@@ -144,6 +144,7 @@ input[type=text]::placeholder{color:rgba(255,255,255,.3)}
 
 /* 탭 힌트 */
 .tap-hint{font-size:11px;color:rgba(255,255,255,.25);letter-spacing:.1em;animation:blink 2s step-end infinite;margin-top:24px;text-align:center}
+#awake-tap{font-size:18px;color:rgba(255,255,255,.75);letter-spacing:.15em;margin-top:32px;text-shadow:0 0 12px rgba(255,255,255,.4)}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.15}}
 
 .cat-img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block;position:absolute;inset:0;}
@@ -603,6 +604,7 @@ input[type=text]::placeholder{color:rgba(255,255,255,.3)}
   <!-- 단서 해결 팝업 -->
   <div class="ov" id="ov-p2" style="display:none">
     <div class="pop" style="max-height:82vh;overflow-y:auto">
+      <button onclick="document.getElementById('ov-p2').style.display='none';document.getElementById('ov-p2').onclick=null" style="background:none;border:none;color:rgba(255,255,255,.5);font-size:13px;cursor:pointer;padding:0 0 10px 0;text-align:left;letter-spacing:.05em">← 뒤로</button>
       <div class="pop-tag" id="pp2-tag"></div>
       <div class="pop-title" id="pp2-q" style="font-size:15px;line-height:1.5"></div>
       <div class="pop-body" id="pp2-body" style="border-left-color:#F5A623"></div>
