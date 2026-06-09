@@ -61,13 +61,12 @@ function openPop(id, room){
   if(G.collected[id]) return;
   var cl = CLUES[id];
   G.activePop = id; G.activeRoom = room;
-  var isC = cl.correct;
   var ovId = 'ov'+room;
   document.getElementById(ovId+'-tag').textContent = cl.tag;
-  document.getElementById(ovId+'-title').textContent = isC ? '★ 유망한 단서' : '단서 검토 중';
+  document.getElementById(ovId+'-title').textContent = '';
   var body = document.getElementById(ovId+'-body');
   body.textContent = cl.spy;
-  body.className = 'pop-body' + (isC ? '' : ' w');
+  body.className = 'pop-body';
   document.getElementById(ovId).style.display = 'flex';
 }
  
