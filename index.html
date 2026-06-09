@@ -358,13 +358,13 @@ input[type=text]::placeholder{color:rgba(255,255,255,.3)}
 <div class="scr" id="s-brief">
   <div class="cin">
     <div class="cl" id="bc0">2031년. 게임업계 라이벌의 시대.</div>
-    <div class="cl" id="bc1">당신은 게임업계 1위 <strong style="color:#fff">킨더조이</strong> 경영기획 실장.</div>
+    <div class="cl" id="bc1">당신은 게임업계 1위 <strong style="color:#fff">일루셔니스트 게임즈</strong> 경영기획 실장.</div>
     <div class="cl" id="bc2">그러나 진짜 정체는 따로 있다.</div>
     <div style="height:16px"></div>
     <div class="cl red" id="bc3">당신은 경쟁사 2위 게임사 소울컴퍼니가 심어 놓은</div>
     <div class="cl red" id="bc4">산업 스파이다.</div>
     <div style="height:16px"></div>
-    <div class="cl" id="bc5">지령: 킨더조이를 무너뜨릴</div>
+    <div class="cl" id="bc5">지령: 일루셔니스트 게임즈를 무너뜨릴</div>
     <div class="cl" id="bc6">결정적 단서 10개를 확보하라.</div>
     <div style="height:24px"></div>
     <button class="btn btn-red" id="brief-go" style="display:none;max-width:260px" onclick="gotoR1()">임무 개시 →</button>
@@ -375,7 +375,7 @@ input[type=text]::placeholder{color:rgba(255,255,255,.3)}
 <div class="scr" id="s-r1">
   <div class="hud">
     <div>
-      <div class="hud-title">킨더조이 · 대회의실</div>
+      <div class="hud-title">일루셔니스트 게임즈 · 대회의실</div>
       <div class="dots" id="dr1"></div>
     </div>
     <div style="display:flex;gap:8px;align-items:center">
@@ -450,7 +450,7 @@ input[type=text]::placeholder{color:rgba(255,255,255,.3)}
       <rect class="clue-border" x="1" y="1" width="98" height="98" rx="3" style="animation-delay:1s,1s"/>
     </svg>
   </div>
-  <div class="hint-bar">🔍 킨더조이를 망하게 할 단서를 찾아주세요</div>
+  <div class="hint-bar">🔍 일루셔니스트 게임즈를 망하게 할 단서를 찾아주세요</div>
   <div id="meet-wrap-r1" style="display:none;position:absolute;bottom:14px;left:16px;right:16px;z-index:25">
     <button class="btn btn-green" onclick="gotoBoss()">모든 단서 수집 완료 — 빅보스를 만나러 간다 →</button>
   </div>
@@ -471,7 +471,7 @@ input[type=text]::placeholder{color:rgba(255,255,255,.3)}
 <div class="scr" id="s-r2">
   <div class="hud">
     <div>
-      <div class="hud-title">킨더조이 · 임원 집무실</div>
+      <div class="hud-title">일루셔니스트 게임즈 · 임원 집무실</div>
       <div class="dots" id="dr2"></div>
     </div>
     <div style="display:flex;gap:8px;align-items:center">
@@ -541,7 +541,7 @@ input[type=text]::placeholder{color:rgba(255,255,255,.3)}
       <rect class="clue-border" x="1" y="1" width="98" height="98" rx="8" style="animation-delay:.8s,.8s"/>
     </svg>
   </div>
-  <div class="hint-bar">🔍 킨더조이를 망하게 할 단서를 찾아주세요</div>
+  <div class="hint-bar">🔍 일루셔니스트 게임즈를 망하게 할 단서를 찾아주세요</div>
   <div class="ov" id="ov2" style="display:none">
     <div class="pop">
       <div class="pop-tag" id="ov2-tag"></div>
@@ -571,7 +571,7 @@ input[type=text]::placeholder{color:rgba(255,255,255,.3)}
     <div class="boss-overlay"></div>
     <div class="boss-content">
       <div id="boss-lines" style="width:100%;display:flex;flex-direction:column;align-items:center;gap:0"></div>
-      <div class="tap-hint" style="margin-top:16px">[ 화면을 탭하세요 ]</div>
+      <div class="tap-hint" style="margin-top:40px">[ 화면을 탭하세요 ]</div>
     </div>
   </div>
 </div>
@@ -580,7 +580,7 @@ input[type=text]::placeholder{color:rgba(255,255,255,.3)}
 <div class="scr" id="s-awake">
   <div class="cin" id="awake-cin" onclick="nextAwake()" style="cursor:pointer;overflow:hidden;position:relative">
     <div id="awake-lines" style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative"></div>
-    <div class="tap-hint" id="awake-tap" style="position:relative;z-index:10">[ 화면을 탭하세요 ]</div>
+    <div class="tap-hint" id="awake-tap" style="position:relative;z-index:40">[ 화면을 탭하세요 ]</div>
   </div>
 </div>
 
@@ -588,7 +588,7 @@ input[type=text]::placeholder{color:rgba(255,255,255,.3)}
 <div class="scr" id="s-p2">
   <div class="hud">
     <div>
-      <div class="hud-title">킨더조이 · 대표 집무실</div>
+      <div class="hud-title">일루셔니스트 게임즈 · 대표 집무실</div>
       <div style="font-size:10px;color:#F5A623;margin-top:2px" id="p2-txt">과제를 선택해 해결 방법을 결정하세요</div>
     </div>
     <div class="badge" id="p2-badge">0/0</div>
@@ -616,7 +616,7 @@ input[type=text]::placeholder{color:rgba(255,255,255,.3)}
   <div class="ov" id="ov-submit" style="display:none">
     <div class="pop" style="text-align:center">
       <div style="font-size:16px;font-weight:700;color:#fff;margin-bottom:8px">이렇게 결재하시겠습니까?</div>
-      <div style="font-size:13px;color:rgba(255,255,255,.55);margin-bottom:20px">선택하신 해결 방법으로 킨더조이의 방향을 결정합니다</div>
+      <div style="font-size:13px;color:rgba(255,255,255,.55);margin-bottom:20px">선택하신 해결 방법으로 일루셔니스트 게임즈의 방향을 결정합니다</div>
       <div style="display:flex;gap:10px">
         <button class="btn btn-red" onclick="doSubmit()" style="flex:1">네, 결재합니다</button>
         <button class="btn btn-gray" onclick="closeSubmitPop()" style="flex:1">조금 더 고민해본다</button>
@@ -635,7 +635,7 @@ input[type=text]::placeholder{color:rgba(255,255,255,.3)}
     <div class="r-extra" id="r-extra" style="display:none"></div>
     <div class="r-btns">
       <button class="btn btn-outline" onclick="restartAll()">처음부터 다시하기</button>
-      <button class="btn btn-gray" onclick="restartP2()">킨더조이 사장실부터 다시하기</button>
+      <button class="btn btn-gray" onclick="restartP2()">일루셔니스트 게임즈 사장실부터 다시하기</button>
     </div>
   </div>
 </div>
