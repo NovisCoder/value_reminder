@@ -43,35 +43,71 @@ function clearLogs(){
 function renderAdmin(logs){
   function gc(g){ return g==='S'||g==='A'?'#00aa44':g==='B'?'#ff9900':'#cc3333'; }
  
-  function clueInfo(l){
-    var c = typeof l.collected === 'string' ? JSON.parse(l.collected||'{}') : (l.collected||{});
-    var correct = Object.keys(c).filter(function(id){ return c[id].correct; });
-    var wrong = Object.keys(c).filter(function(id){ return !c[id].correct; });
-    return '정답 '+correct.length+'개('+correct.join(',')+') / 오답 '+wrong.length+'개';
-  }
- 
-  function choiceInfo(l){
+  // CLU1~CLU10 각 선택값 추출 함수
+  function getChoiceForClu(l, cluNum){
     var ch = typeof l.choices === 'string' ? JSON.parse(l.choices||'{}') : (l.choices||{});
-    return Object.entries(ch).map(function(e){
-      var label = e[1] && e[1].score>0 ? '혁신O' : '혁신X';
-      return 'CLU-'+e[0]+':'+label;
-    }).join(' / ');
+    var key = String(cluNum);
+    if(ch[key] === undefined) return '-';
+    var score = ch[key] && ch[key].score > 0;
+    return score ? '혁신O' : '혁신X';
   }
  
-  var rows = logs.map(function(l,i){
+  // CLU1~CLU10 셀 생성
+  function choiceCells(l){
+    var cells = '';
+    for(var i = 1; i <= 10; i++){
+      var val = getChoiceForClu(l, i);
+      var color = val === '혁신O' ? '#00aa44' : val === '혁신X' ? '#cc3333' : '#aaa';
+      cells += '<td style="font-size:12px;text-align:center;color:' + color + ';font-weight:700">' + val + '</td>';
+    }
+    return cells;
+  }
+ 
+  var rows = logs.map(function(l, i){
     return [
       '<tr>',
-      '<td>'+(i+1)+'</td>',
-      '<td style="font-weight:700">'+l.name+'</td>',
-      '<td>'+(l.start_time?new Date(l.start_time).toLocaleString('ko-KR'):'-')+'</td>',
-      '<td>'+Math.floor((l.total_sec||0)/60)+'분 '+((l.total_sec||0)%60)+'초</td>',
-      '<td style="font-size:24px;font-weight:900;color:'+gc(l.grade)+'">'+l.grade+'</td>',
-      '<td style="font-weight:700">'+l.score+'점</td>',
-      '<td style="font-size:11px">'+clueInfo(l)+'</td>',
-      '<td style="font-size:11px;line-height:1.8">'+choiceInfo(l)+'</td>',
+      '<td>' + (i+1) + '</td>',
+      '<td style="font-weight:700">' + l.name + '</td>',
+      '<td>' + (l.start_time ? new Date(l.start_time).toLocaleString('ko-KR') : '-') + '</td>',
+      '<td>' + Math.floor((l.total_sec||0)/60) + '분 ' + ((l.total_sec||0)%60) + '초</td>',
+      '<td style="font-size:22px;font-weight:900;color:' + gc(l.grade) + ';text-align:center">' + l.grade + '</td>',
+      '<td style="font-weight:700;text-align:center">' + l.score + '점</td>',
+      choiceCells(l),
       '</tr>'
     ].join('');
   }).join('');
+ 
+  // 엑셀 다운로드용 TSV 생성 함수 (탭 구분값 — 엑셀에 붙여넣기도 가능)
+  var downloadScript = [
+    'function downloadExcel(){',
+    '  var header = ["#","이름","접속시각","플레이시간","등급","점수","CLU1","CLU2","CLU3","CLU4","CLU5","CLU6","CLU7","CLU8","CLU9","CLU10"].join("\\t");',
+    '  var rows = [];',
+    '  var trs = document.querySelectorAll("tbody tr");',
+    '  trs.forEach(function(tr, idx){',
+    '    var tds = tr.querySelectorAll("td");',
+    '    if(!tds.length) return;',
+    '    var row = [];',
+    '    for(var i=0;i<tds.length;i++){ row.push(tds[i].innerText.trim()); }',
+    '    rows.push(row.join("\\t"));',
+    '  });',
+    '  var tsv = header + "\\n" + rows.join("\\n");',
+    '  var bom = "\\uFEFF";',
+    '  var blob = new Blob([bom + tsv], {type:"text/tab-separated-values;charset=utf-8"});',
+    '  var a = document.createElement("a");',
+    '  a.href = URL.createObjectURL(blob);',
+    '  a.download = "ktc_logs_" + new Date().toISOString().slice(0,10) + ".tsv";',
+    '  a.click();',
+    '}',
+    '',
+    'function clearLogs(){',
+    '  if(!confirm("로그를 모두 삭제할까요?\\n이 작업은 되돌릴 수 없습니다.")) return;',
+    '  fetch("' + SUPABASE_URL + '/rest/v1/ktc_logs?id=gte.0",{',
+    '    method:"DELETE",',
+    '    headers:{"apikey":"' + SUPABASE_KEY + '","Authorization":"Bearer ' + SUPABASE_KEY + '"}',
+    '  }).then(function(){ location.reload(); })',
+    '  .catch(function(e){ alert("삭제 실패: "+e); });',
+    '}'
+  ].join('\n');
  
   var adminHtml = [
     '<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8">',
@@ -81,20 +117,24 @@ function renderAdmin(logs){
     'body{font-family:sans-serif;padding:16px;background:#f4f4f4;font-size:14px}',
     'h1{font-size:18px;margin-bottom:4px}',
     '.sub{font-size:12px;color:#888;margin-bottom:14px}',
-    'table{border-collapse:collapse;width:100%;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.1)}',
-    'th{background:#222;color:#fff;padding:9px 11px;text-align:left;font-size:12px;letter-spacing:.04em;white-space:nowrap}',
-    'td{padding:9px 11px;border-bottom:1px solid #eee;vertical-align:top}',
+    '.table-wrap{overflow-x:auto;width:100%}',
+    'table{border-collapse:collapse;width:100%;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.1);min-width:900px}',
+    'th{background:#222;color:#fff;padding:9px 10px;text-align:center;font-size:12px;letter-spacing:.04em;white-space:nowrap}',
+    'th.left{text-align:left}',
+    'td{padding:9px 10px;border-bottom:1px solid #eee;vertical-align:middle;white-space:nowrap}',
     'tr:hover td{background:#f9f9f9}',
     '.summary{display:flex;gap:12px;margin-bottom:14px;flex-wrap:wrap}',
     '.sum-box{background:#fff;border-radius:8px;padding:12px 16px;box-shadow:0 1px 4px rgba(0,0,0,.08);min-width:100px;text-align:center}',
     '.sum-num{font-size:24px;font-weight:700}',
     '.sum-lbl{font-size:11px;color:#888;margin-top:2px}',
-    '.btn-refresh{margin-bottom:14px;padding:8px 18px;background:#222;color:#fff;border:none;cursor:pointer;border-radius:6px;font-size:13px;margin-right:8px}',
-    '.btn-del{margin-bottom:14px;padding:8px 18px;background:#cc3333;color:#fff;border:none;cursor:pointer;border-radius:6px;font-size:13px;margin-right:8px}',
-    '.btn-logout{margin-bottom:14px;padding:8px 18px;background:#888;color:#fff;border:none;cursor:pointer;border-radius:6px;font-size:13px}',
+    '.btn{margin-bottom:14px;padding:8px 18px;border:none;cursor:pointer;border-radius:6px;font-size:13px;margin-right:8px}',
+    '.btn-refresh{background:#222;color:#fff}',
+    '.btn-excel{background:#1e7e34;color:#fff}',
+    '.btn-del{background:#cc3333;color:#fff}',
+    '.btn-logout{background:#888;color:#fff}',
     '</style></head><body>',
     '<h1>Kill The Company — 플레이 로그</h1>',
-    '<div class="sub">총 '+logs.length+'건의 플레이 기록</div>',
+    '<div class="sub">총 ' + logs.length + '건의 플레이 기록</div>',
   ].join('');
  
   if(logs.length > 0){
@@ -102,32 +142,35 @@ function renderAdmin(logs){
     var sCount = logs.filter(function(l){return l.grade==='S'||l.grade==='A';}).length;
     adminHtml += [
       '<div class="summary">',
-      '<div class="sum-box"><div class="sum-num">'+logs.length+'</div><div class="sum-lbl">총 플레이</div></div>',
-      '<div class="sum-box"><div class="sum-num" style="color:#00aa44">'+sCount+'</div><div class="sum-lbl">성공(S/A)</div></div>',
-      '<div class="sum-box"><div class="sum-num">'+(logs.length-sCount)+'</div><div class="sum-lbl">실패(B~D)</div></div>',
-      '<div class="sum-box"><div class="sum-num">'+avg+'</div><div class="sum-lbl">평균 점수</div></div>',
+      '<div class="sum-box"><div class="sum-num">' + logs.length + '</div><div class="sum-lbl">총 플레이</div></div>',
+      '<div class="sum-box"><div class="sum-num" style="color:#00aa44">' + sCount + '</div><div class="sum-lbl">성공(S/A)</div></div>',
+      '<div class="sum-box"><div class="sum-num">' + (logs.length-sCount) + '</div><div class="sum-lbl">실패(B~D)</div></div>',
+      '<div class="sum-box"><div class="sum-num">' + avg + '</div><div class="sum-lbl">평균 점수</div></div>',
       '</div>'
     ].join('');
   }
  
   adminHtml += [
-    '<button class="btn-refresh" onclick="location.reload()">🔄 새로고침</button>',
-    '<button class="btn-del" onclick="clearLogs()">🗑 로그 초기화</button>',
-    '<button class="btn-logout" onclick="sessionStorage.removeItem(\'ktc_admin\');location.reload()">로그아웃</button>',
+    '<button class="btn btn-refresh" onclick="location.reload()">🔄 새로고침</button>',
+    '<button class="btn btn-excel" onclick="downloadExcel()">📥 엑셀 다운로드</button>',
+    '<button class="btn btn-del" onclick="clearLogs()">🗑 로그 초기화</button>',
+    '<button class="btn btn-logout" onclick="sessionStorage.removeItem(\'ktc_admin\');location.reload()">로그아웃</button>',
+    '<div class="table-wrap">',
     '<table><thead><tr>',
-    '<th>#</th><th>이름</th><th>접속시각</th><th>플레이시간</th><th>등급</th><th>점수</th><th>클루 수집</th><th>해결 선택</th>',
+    '<th class="left">#</th>',
+    '<th class="left">이름</th>',
+    '<th class="left">접속시각</th>',
+    '<th class="left">플레이시간</th>',
+    '<th>등급</th>',
+    '<th>점수</th>',
+    '<th>CLU1</th><th>CLU2</th><th>CLU3</th><th>CLU4</th><th>CLU5</th>',
+    '<th>CLU6</th><th>CLU7</th><th>CLU8</th><th>CLU9</th><th>CLU10</th>',
     '</tr></thead><tbody>',
-    (rows || '<tr><td colspan="8" style="text-align:center;color:#999;padding:20px">아직 플레이 기록이 없습니다</td></tr>'),
+    (rows || '<tr><td colspan="16" style="text-align:center;color:#999;padding:20px">아직 플레이 기록이 없습니다</td></tr>'),
     '</tbody></table>',
+    '</div>',
     '<script>',
-    'function clearLogs(){',
-    '  if(!confirm("로그를 모두 삭제할까요?\\n이 작업은 되돌릴 수 없습니다.")) return;',
-    '  fetch("'+SUPABASE_URL+'/rest/v1/ktc_logs?id=gte.0",{',
-    '    method:"DELETE",',
-    '    headers:{"apikey":"'+SUPABASE_KEY+'","Authorization":"Bearer '+SUPABASE_KEY+'"}',
-    '  }).then(function(){ location.reload(); })',
-    '  .catch(function(e){ alert("삭제 실패: "+e); });',
-    '}',
+    downloadScript,
     '<\/script>',
     '</body></html>'
   ].join('');
