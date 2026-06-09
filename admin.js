@@ -7,11 +7,13 @@ function openAdmin(){
   if(id !== 'kill'){ alert('아이디 또는 비밀번호가 틀렸습니다.'); return; }
   var pw = prompt('비밀번호');
   if(pw !== 'thecompany'){ alert('아이디 또는 비밀번호가 틀렸습니다.'); return; }
+  // 로그인 상태 저장 (24시간)
+  var expire = Date.now() + 24*60*60*1000;
+  sessionStorage.setItem('ktc_admin', expire);
   showAdminPage();
 }
-
+ 
 function showAdminPage(){
-  // Supabase에서 로그 불러오기
   fetch(SUPABASE_URL + '/rest/v1/ktc_logs?order=start_time.desc', {
     headers: {
       'apikey': SUPABASE_KEY,
@@ -25,17 +27,17 @@ function showAdminPage(){
     console.error(e);
   });
 }
-
+ 
 function renderAdmin(logs){
   function gc(g){ return g==='S'||g==='A'?'#00aa44':g==='B'?'#ff9900':'#cc3333'; }
-
+ 
   function clueInfo(l){
     var c = typeof l.collected === 'string' ? JSON.parse(l.collected||'{}') : (l.collected||{});
     var correct = Object.keys(c).filter(function(id){ return c[id].correct; });
     var wrong = Object.keys(c).filter(function(id){ return !c[id].correct; });
     return '정답 '+correct.length+'개('+correct.join(',')+') / 오답 '+wrong.length+'개';
   }
-
+ 
   function choiceInfo(l){
     var ch = typeof l.choices === 'string' ? JSON.parse(l.choices||'{}') : (l.choices||{});
     return Object.entries(ch).map(function(e){
@@ -43,7 +45,7 @@ function renderAdmin(logs){
       return 'CLU-'+e[0]+':'+label;
     }).join(' / ');
   }
-
+ 
   var rows = logs.map(function(l,i){
     return [
       '<tr>',
@@ -58,7 +60,7 @@ function renderAdmin(logs){
       '</tr>'
     ].join('');
   }).join('');
-
+ 
   var adminHtml = [
     '<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8">',
     '<meta name="viewport" content="width=device-width,initial-scale=1">',
@@ -71,16 +73,17 @@ function renderAdmin(logs){
     'th{background:#222;color:#fff;padding:9px 11px;text-align:left;font-size:12px;letter-spacing:.04em;white-space:nowrap}',
     'td{padding:9px 11px;border-bottom:1px solid #eee;vertical-align:top}',
     'tr:hover td{background:#f9f9f9}',
-    '.del{margin-bottom:14px;padding:8px 18px;background:#cc3333;color:#fff;border:none;cursor:pointer;border-radius:6px;font-size:13px}',
     '.summary{display:flex;gap:12px;margin-bottom:14px;flex-wrap:wrap}',
     '.sum-box{background:#fff;border-radius:8px;padding:12px 16px;box-shadow:0 1px 4px rgba(0,0,0,.08);min-width:100px;text-align:center}',
     '.sum-num{font-size:24px;font-weight:700}',
     '.sum-lbl{font-size:11px;color:#888;margin-top:2px}',
+    '.btn-refresh{margin-bottom:14px;padding:8px 18px;background:#222;color:#fff;border:none;cursor:pointer;border-radius:6px;font-size:13px;margin-right:8px}',
+    '.btn-logout{margin-bottom:14px;padding:8px 18px;background:#888;color:#fff;border:none;cursor:pointer;border-radius:6px;font-size:13px}',
     '</style></head><body>',
     '<h1>Kill The Company — 플레이 로그</h1>',
     '<div class="sub">총 '+logs.length+'건의 플레이 기록</div>',
   ].join('');
-
+ 
   if(logs.length > 0){
     var avg = Math.round(logs.reduce(function(a,b){return a+(b.score||0);},0)/logs.length);
     var sCount = logs.filter(function(l){return l.grade==='S'||l.grade==='A';}).length;
@@ -93,8 +96,10 @@ function renderAdmin(logs){
       '</div>'
     ].join('');
   }
-
+ 
   adminHtml += [
+    '<button class="btn-refresh" onclick="location.reload()">🔄 새로고침</button>',
+    '<button class="btn-logout" onclick="sessionStorage.removeItem(\'ktc_admin\');location.reload()">로그아웃</button>',
     '<table><thead><tr>',
     '<th>#</th><th>이름</th><th>접속시각</th><th>플레이시간</th><th>등급</th><th>점수</th><th>클루 수집</th><th>해결 선택</th>',
     '</tr></thead><tbody>',
@@ -102,16 +107,24 @@ function renderAdmin(logs){
     '</tbody></table>',
     '</body></html>'
   ].join('');
-
+ 
   document.open(); document.write(adminHtml); document.close();
 }
-
+ 
 // ── URL 파라미터로 관리자 직접 접근: ?smilevalue ──
 (function(){
   if(location.search.indexOf('smilevalue') < 0) return;
+  // 이미 로그인된 상태면 바로 진입
+  var saved = sessionStorage.getItem('ktc_admin');
+  if(saved && Date.now() < parseInt(saved)){
+    showAdminPage();
+    return;
+  }
   var id = prompt('아이디');
   if(id !== 'kill'){ alert('아이디 또는 비밀번호가 틀렸습니다.'); return; }
   var pw = prompt('비밀번호');
   if(pw !== 'thecompany'){ alert('아이디 또는 비밀번호가 틀렸습니다.'); return; }
+  var expire = Date.now() + 24*60*60*1000;
+  sessionStorage.setItem('ktc_admin', expire);
   showAdminPage();
 })();
