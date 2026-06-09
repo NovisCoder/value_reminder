@@ -7,7 +7,6 @@ function openAdmin(){
   if(id !== 'kill'){ alert('아이디 또는 비밀번호가 틀렸습니다.'); return; }
   var pw = prompt('비밀번호');
   if(pw !== 'thecompany'){ alert('아이디 또는 비밀번호가 틀렸습니다.'); return; }
-  // 로그인 상태 저장 (24시간)
   var expire = Date.now() + 24*60*60*1000;
   sessionStorage.setItem('ktc_admin', expire);
   showAdminPage();
@@ -26,6 +25,19 @@ function showAdminPage(){
     alert('데이터를 불러오지 못했습니다. Supabase 설정을 확인하세요.');
     console.error(e);
   });
+}
+ 
+function clearLogs(){
+  if(!confirm('로그를 모두 삭제할까요?\n이 작업은 되돌릴 수 없습니다.')) return;
+  fetch(SUPABASE_URL + '/rest/v1/ktc_logs?id=gte.0', {
+    method: 'DELETE',
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': 'Bearer ' + SUPABASE_KEY
+    }
+  })
+  .then(function(){ location.reload(); })
+  .catch(function(e){ alert('삭제 실패: ' + e); });
 }
  
 function renderAdmin(logs){
@@ -78,6 +90,7 @@ function renderAdmin(logs){
     '.sum-num{font-size:24px;font-weight:700}',
     '.sum-lbl{font-size:11px;color:#888;margin-top:2px}',
     '.btn-refresh{margin-bottom:14px;padding:8px 18px;background:#222;color:#fff;border:none;cursor:pointer;border-radius:6px;font-size:13px;margin-right:8px}',
+    '.btn-del{margin-bottom:14px;padding:8px 18px;background:#cc3333;color:#fff;border:none;cursor:pointer;border-radius:6px;font-size:13px;margin-right:8px}',
     '.btn-logout{margin-bottom:14px;padding:8px 18px;background:#888;color:#fff;border:none;cursor:pointer;border-radius:6px;font-size:13px}',
     '</style></head><body>',
     '<h1>Kill The Company — 플레이 로그</h1>',
@@ -99,12 +112,23 @@ function renderAdmin(logs){
  
   adminHtml += [
     '<button class="btn-refresh" onclick="location.reload()">🔄 새로고침</button>',
+    '<button class="btn-del" onclick="clearLogs()">🗑 로그 초기화</button>',
     '<button class="btn-logout" onclick="sessionStorage.removeItem(\'ktc_admin\');location.reload()">로그아웃</button>',
     '<table><thead><tr>',
     '<th>#</th><th>이름</th><th>접속시각</th><th>플레이시간</th><th>등급</th><th>점수</th><th>클루 수집</th><th>해결 선택</th>',
     '</tr></thead><tbody>',
     (rows || '<tr><td colspan="8" style="text-align:center;color:#999;padding:20px">아직 플레이 기록이 없습니다</td></tr>'),
     '</tbody></table>',
+    '<script>',
+    'function clearLogs(){',
+    '  if(!confirm("로그를 모두 삭제할까요?\\n이 작업은 되돌릴 수 없습니다.")) return;',
+    '  fetch("'+SUPABASE_URL+'/rest/v1/ktc_logs?id=gte.0",{',
+    '    method:"DELETE",',
+    '    headers:{"apikey":"'+SUPABASE_KEY+'","Authorization":"Bearer '+SUPABASE_KEY+'"}',
+    '  }).then(function(){ location.reload(); })',
+    '  .catch(function(e){ alert("삭제 실패: "+e); });',
+    '}',
+    '<\/script>',
     '</body></html>'
   ].join('');
  
@@ -114,7 +138,6 @@ function renderAdmin(logs){
 // ── URL 파라미터로 관리자 직접 접근: ?smilevalue ──
 (function(){
   if(location.search.indexOf('smilevalue') < 0) return;
-  // 이미 로그인된 상태면 바로 진입
   var saved = sessionStorage.getItem('ktc_admin');
   if(saved && Date.now() < parseInt(saved)){
     showAdminPage();
