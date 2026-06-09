@@ -357,7 +357,12 @@ function openP2Clue(id){
     list.appendChild(btn);
   });
  
-  document.getElementById('ov-p2').style.display='flex';
+  var ov = document.getElementById('ov-p2');
+  ov.style.display='flex';
+  // overlay 배경 클릭 시 팝업 닫기 (카드 그리드로 돌아가기)
+  ov.onclick = function(e){
+    if(e.target === ov){ ov.style.display='none'; ov.onclick=null; }
+  };
 }
  
 function updateP2Card(id, choiceIdx, score){
