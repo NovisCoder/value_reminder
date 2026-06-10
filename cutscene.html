@@ -209,7 +209,7 @@ const SCENES = [
 
 const PROGRESS_INSERT_AFTER = 11;
 
-let cur = 0, timer = null;
+let cur = 0, timer = null, endTimer = null;
 
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
@@ -235,13 +235,15 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function replayCutscene() {
+  if(endTimer) { clearTimeout(endTimer); endTimer = null; }
   document.getElementById('end-screen').style.display = 'none';
   cur = 0; playScene(0);
 }
 function skipCutscene() {
   clearTimeout(timer);
   document.getElementById('prog-overlay').classList.remove('on');
-  showEnd();
+  // SKIP 시에도 parent에 완료 신호 전송
+  window.parent.postMessage('cutscene-done', '*');
 }
 
 async function playScene(idx) {
@@ -361,6 +363,12 @@ function showEnd() {
     tb.className   = 'style-center';
     tw.className   = 'center';
     setTimeout(() => tb.classList.add('show'), 400);
+
+    // end-screen 표시 후 2초 뒤 자동으로 결과 화면으로 이동
+    endTimer = setTimeout(() => {
+      window.parent.postMessage('cutscene-done', '*');
+    }, 3500);
+
     const end = document.getElementById('end-screen');
     end.style.display = 'flex';
     end.style.opacity = '0';

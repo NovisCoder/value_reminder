@@ -150,8 +150,9 @@ input[type=text]::placeholder{color:rgba(255,255,255,.3)}
 .cat-img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block;position:absolute;inset:0;}
 .cat-wrap{position:absolute;inset:0;display:flex;flex-direction:column;}
 .cat-dialog-overlay{position:absolute;bottom:0;left:0;right:0;padding:16px 16px 40px;background:linear-gradient(transparent,rgba(0,0,0,.85) 40%);z-index:3;}
-.img-cat-smile{content:url("images/cat_smile.jpg")}
-.img-cat-surp{content:url("images/cat_surp.jpg")}
+/* cat images are now set via src attribute — no content:url needed */
+.img-cat-smile{}
+.img-cat-surp{}
 
 @keyframes cardPulse{0%,100%{box-shadow:0 0 0 0 rgba(245,166,35,.4)}50%{box-shadow:0 0 0 8px rgba(245,166,35,0)}}
 
@@ -623,6 +624,15 @@ input[type=text]::placeholder{color:rgba(255,255,255,.3)}
       </div>
     </div>
   </div>
+</div>
+
+<!-- 컷씬 (iframe embed) -->
+<div class="scr" id="s-cutscene" style="background:#000;padding:0">
+  <iframe id="cutscene-frame"
+    src=""
+    style="width:100%;height:100%;border:none;display:block"
+    allow="autoplay">
+  </iframe>
 </div>
 
 <!-- 결과 -->

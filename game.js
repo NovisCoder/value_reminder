@@ -15,9 +15,22 @@ function startGame(){
   G.name = nm;
   G.startTime = Date.now();
   G.collected = {}; G.choices = {};
+  // 비서 이미지 프리로드
+  ['images/cat_surp.jpg', 'images/cat_smile.jpg'].forEach(function(src){
+    var img = new Image(); img.src = src;
+  });
   show('s-brief');
   runBrief();
 }
+
+// 컷씬 iframe에서 완료 메시지를 받아 결과 화면으로 전환
+window.addEventListener('message', function(e){
+  if(e.data === 'cutscene-done'){
+    // iframe src 초기화 (메모리 해제)
+    document.getElementById('cutscene-frame').src = '';
+    calcResult();
+  }
+});
  
 function runBrief(){
   var ids=['bc0','bc1','bc2','bc3','bc4','bc5','bc6'];
@@ -250,6 +263,7 @@ function addAwakeStep(){
  
     var img = document.createElement('img');
     img.className = 'cat-img ' + (step.img==='smile' ? 'img-cat-smile' : 'img-cat-surp');
+    img.src = step.img==='smile' ? 'images/cat_smile.jpg' : 'images/cat_surp.jpg';
     img.alt = step.img==='smile' ? '웃는 고양이 비서' : '놀란 고양이 비서';
     wrap.appendChild(img);
  
@@ -413,7 +427,12 @@ function closeSubmitPop(){
 function doSubmit(){
   document.getElementById('ov-submit').style.display='none';
   revealP2Results();
-  setTimeout(calcResult, 800);
+  // 800ms 후 컷씬 화면으로 전환
+  setTimeout(function(){
+    var frame = document.getElementById('cutscene-frame');
+    frame.src = 'cutscene.html';
+    show('s-cutscene');
+  }, 800);
 }
  
 // ── 점수 계산 ──
@@ -514,6 +533,9 @@ function restartAll(){
   if(mw2) mw2.style.display='none';
   document.getElementById('ov-submit').style.display='none';
   document.getElementById('r-extra').style.display='none';
+  // 컷씬 iframe 초기화
+  var frame = document.getElementById('cutscene-frame');
+  if(frame) frame.src = '';
   show('s-intro');
 }
  
@@ -524,6 +546,9 @@ function restartP2(){
   if(subBar) subBar.style.display='none';
   var ovSubmit = document.getElementById('ov-submit');
   if(ovSubmit) ovSubmit.style.display='none';
+  // 컷씬 iframe 초기화
+  var frame = document.getElementById('cutscene-frame');
+  if(frame) frame.src = '';
   show('s-p2');
   buildP2Grid();
   var badge = document.getElementById('p2-badge');
