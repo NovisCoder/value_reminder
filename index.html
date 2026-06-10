@@ -661,17 +661,7 @@ input[type=text]::placeholder{color:rgba(255,255,255,.3)}
     </div>
   </div>
 
-  <!-- 전체 완료 → 결재 확인 팝업 -->
-  <div class="ov" id="ov-submit" style="display:none">
-    <div class="pop" style="text-align:center">
-      <div style="font-size:16px;font-weight:700;color:#fff;margin-bottom:8px">이렇게 결재하시겠습니까?</div>
-      <div style="font-size:13px;color:rgba(255,255,255,.55);margin-bottom:20px">선택하신 해결 방법으로 일루셔니스트 게임즈의 방향을 결정합니다</div>
-      <div style="display:flex;gap:10px">
-        <button class="btn btn-red" onclick="doSubmit()" style="flex:1">네, 결재합니다</button>
-        <button class="btn btn-gray" onclick="closeSubmitPop()" style="flex:1">조금 더 고민해본다</button>
-      </div>
-    </div>
-  </div>
+  <!-- 전체 완료 → 결재 확인 팝업은 #app 최상위 레이어로 이동됨 -->
 </div>
 
 <!-- 컷씬 (인라인 내장) -->
@@ -759,6 +749,18 @@ input[type=text]::placeholder{color:rgba(255,255,255,.3)}
 
   <div id="wrong-toast" class="wrong-toast" style="display:none">
     <div class="wrong-toast-text" id="wrong-toast-msg"></div>
+  </div>
+
+  <!-- 결재 확인 팝업 — 최상위 fixed 레이어 -->
+  <div id="ov-submit" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.78);align-items:flex-end;padding:12px;z-index:200">
+    <div class="pop" style="text-align:center">
+      <div style="font-size:16px;font-weight:700;color:#fff;margin-bottom:8px">이렇게 결재하시겠습니까?</div>
+      <div style="font-size:13px;color:rgba(255,255,255,.55);margin-bottom:20px">선택하신 해결 방법으로 일루셔니스트 게임즈의 방향을 결정합니다</div>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-red" onclick="doSubmit()" style="flex:1">네, 결재합니다</button>
+        <button class="btn btn-gray" onclick="closeSubmitPop()" style="flex:1">조금 더 고민해본다</button>
+      </div>
+    </div>
   </div>
 </div><!-- #app -->
 <script src="data.js"></script>
