@@ -394,6 +394,9 @@ input[type=text]::placeholder{color:rgba(255,255,255,.3)}
 .cs-pr-pct{color:#4af;font-size:12px;margin-top:3px;text-align:right}
 .cs-pr-final{color:#fff;font-size:14px;letter-spacing:0.2em;text-align:center;opacity:0;transition:opacity 0.5s ease}
 .cs-pr-final.show{opacity:1}
+@keyframes cs-blink{0%,100%{opacity:1}50%{opacity:0.2}}
+.cs-pr-final.blink{animation:cs-blink 1.1s ease-in-out infinite}
+#cs-click-hint{display:none;color:rgba(255,255,255,0.45);font-size:11px;letter-spacing:0.15em;text-align:center;margin-top:16px;animation:cs-blink 1.4s ease-in-out infinite}
 #cs-hud{position:absolute;bottom:58px;right:14px;z-index:12;display:flex;flex-direction:column;align-items:flex-end;gap:7px}
 #cs-skip-btn{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.18);color:rgba(255,255,255,0.45);font-size:11px;padding:4px 10px;cursor:pointer;letter-spacing:0.1em;transition:all 0.2s}
 #cs-skip-btn:hover{background:rgba(255,255,255,0.15);color:#fff}
@@ -716,6 +719,7 @@ input[type=text]::placeholder{color:rgba(255,255,255,.3)}
       <div class="cs-pr" id="cs-pr2"><div class="cs-pr-label">혁신 역량</div><div class="cs-pr-bg"><div class="cs-pr-fill" id="cs-pf2"></div></div><div class="cs-pr-pct" id="cs-pp2">0%</div></div>
       <div class="cs-pr" id="cs-pr3"><div class="cs-pr-label">최종 경영 성과 계산 중...</div><div class="cs-pr-bg"><div class="cs-pr-fill" id="cs-pf3"></div></div><div class="cs-pr-pct" id="cs-pp3">0%</div></div>
       <div class="cs-pr-final" id="cs-pf-done">■ 분석 완료 &nbsp;—&nbsp; 결과를 불러오는 중...</div>
+      <div id="cs-click-hint">▶ 화면을 탭하여 계속</div>
     </div>
 
     <div id="cs-hud">
@@ -810,7 +814,9 @@ function csStart() {
     if(pp) pp.textContent='0%';
   }
   var done=document.getElementById('cs-pf-done');
-  if(done) done.classList.remove('show');
+  if(done) done.classList.remove('show','blink');
+  var hint=document.getElementById('cs-click-hint');
+  if(hint) hint.style.display='none';
   document.getElementById('cs-end').style.display='none';
   document.getElementById('cs-prog').classList.remove('on');
   // 도트 생성
@@ -888,18 +894,35 @@ function csShowProgress(){
       },120);
     }, b.delay);
   });
-  setTimeout(function(){document.getElementById('cs-pf-done').classList.add('show');},5300);
+  // 5300ms 후 "분석 완료" 텍스트 표시 + 깜빡임 + 클릭 힌트
   setTimeout(function(){
-    ov.classList.remove('on');
-    bars.forEach(function(b){
-      document.getElementById('cs-pr'+b.id).classList.remove('show');
-      document.getElementById('cs-pf'+b.id).style.width='0%';
-      document.getElementById('cs-pp'+b.id).textContent='0%';
-    });
-    document.getElementById('cs-pf-done').classList.remove('show');
-    csCur=CS_PROG_AFTER+1;
-    csPlayScene(csCur);
-  },6900);
+    var done = document.getElementById('cs-pf-done');
+    var hint = document.getElementById('cs-click-hint');
+    done.classList.add('show');
+    setTimeout(function(){
+      done.classList.add('blink');
+      hint.style.display = 'block';
+    }, 600);
+    // 클릭하면 다음 씬으로
+    ov.addEventListener('click', csProgressDone, {once:true});
+  }, 5300);
+}
+
+function csProgressDone(){
+  var ov = document.getElementById('cs-prog');
+  var done = document.getElementById('cs-pf-done');
+  var hint = document.getElementById('cs-click-hint');
+  // 초기화
+  ov.classList.remove('on');
+  done.classList.remove('show','blink');
+  hint.style.display = 'none';
+  for(var i=0;i<4;i++){
+    document.getElementById('cs-pr'+i).classList.remove('show');
+    document.getElementById('cs-pf'+i).style.width='0%';
+    document.getElementById('cs-pp'+i).textContent='0%';
+  }
+  csCur = CS_PROG_AFTER+1;
+  csPlayScene(csCur);
 }
 
 function csCountUp(id, target){
@@ -942,7 +965,13 @@ function csSkip(){
   clearTimeout(csTimer);
   clearTimeout(csEndTimer);
   csEndTimer=null;
-  document.getElementById('cs-prog').classList.remove('on');
+  var ov=document.getElementById('cs-prog');
+  ov.removeEventListener('click', csProgressDone);
+  ov.classList.remove('on');
+  var done=document.getElementById('cs-pf-done');
+  var hint=document.getElementById('cs-click-hint');
+  done.classList.remove('show','blink');
+  hint.style.display='none';
   calcResult();
 }
 
