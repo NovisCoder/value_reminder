@@ -22,15 +22,6 @@ function startGame(){
   show('s-brief');
   runBrief();
 }
-
-// 컷씬 iframe에서 완료 메시지를 받아 결과 화면으로 전환
-window.addEventListener('message', function(e){
-  if(e.data === 'cutscene-done'){
-    // iframe src 초기화 (메모리 해제)
-    document.getElementById('cutscene-frame').src = '';
-    calcResult();
-  }
-});
  
 function runBrief(){
   var ids=['bc0','bc1','bc2','bc3','bc4','bc5','bc6'];
@@ -41,8 +32,49 @@ function runBrief(){
 }
  
 // ── 방탈출 이동 ──
-function gotoR1(){ show('s-r1'); updateDots(); }
-function gotoR2(){ show('s-r2'); updateDots(); checkMeetBtn(); }
+var _r1FirstVisit = true; // 첫 방 진입 여부 플래그
+
+function gotoR1(){
+  show('s-r1');
+  updateDots();
+  if(_r1FirstVisit){
+    _r1FirstVisit = false;
+    showNavTooltip();
+  }
+}
+
+function showNavTooltip(){
+  var tip = document.getElementById('nav-tooltip');
+  var btn = document.getElementById('move-btn-r1');
+  if(!tip || !btn) return;
+
+  // 버튼 펄스 효과
+  btn.classList.add('first-pulse');
+  btn.addEventListener('animationend', function(){
+    btn.classList.remove('first-pulse');
+  }, {once: true});
+
+  // 툴팁 표시
+  tip.style.display = 'block';
+  tip.classList.remove('hiding');
+
+  // 3.5초 후 페이드아웃
+  setTimeout(function(){
+    tip.classList.add('hiding');
+    tip.addEventListener('animationend', function(){
+      tip.style.display = 'none';
+      tip.classList.remove('hiding');
+    }, {once: true});
+  }, 3500);
+}
+function gotoR2(){
+  // 혹시 툴팁이 떠 있으면 즉시 제거
+  var tip = document.getElementById('nav-tooltip');
+  if(tip) tip.style.display = 'none';
+  show('s-r2');
+  updateDots();
+  checkMeetBtn();
+}
  
 function correctCount(){
   return Object.values(G.collected).filter(function(c){ return c.correct; }).length;
@@ -427,11 +459,10 @@ function closeSubmitPop(){
 function doSubmit(){
   document.getElementById('ov-submit').style.display='none';
   revealP2Results();
-  // 800ms 후 컷씬 화면으로 전환
+  // 800ms 후 컷씬 시작
   setTimeout(function(){
-    var frame = document.getElementById('cutscene-frame');
-    frame.src = 'cutscene.html';
     show('s-cutscene');
+    csStart();
   }, 800);
 }
  
@@ -523,9 +554,17 @@ function restartAll(){
   var gun=document.getElementById('boss-img-gun');
   if(meet) meet.style.opacity='1';
   if(gun)  gun.style.opacity='0';
+  // 일반 핫스팟 초기화
   document.querySelectorAll('.hs').forEach(function(h){
     h.classList.remove('collected','passed','wrong-flash','done');
     h.style.pointerEvents='';
+  });
+  // SVG 핫스팟 초기화 (✓ 텍스트 제거 포함)
+  document.querySelectorAll('.hs-svg').forEach(function(h){
+    h.classList.remove('collected');
+    h.style.pointerEvents='';
+    var chk=h.querySelector('text');
+    if(chk) chk.remove();
   });
   var mw1=document.getElementById('meet-wrap-r1');
   var mw2=document.getElementById('meet-wrap');
@@ -533,9 +572,8 @@ function restartAll(){
   if(mw2) mw2.style.display='none';
   document.getElementById('ov-submit').style.display='none';
   document.getElementById('r-extra').style.display='none';
-  // 컷씬 iframe 초기화
-  var frame = document.getElementById('cutscene-frame');
-  if(frame) frame.src = '';
+  // 첫 방문 툴팁 플래그 초기화
+  _r1FirstVisit = true;
   show('s-intro');
 }
  
@@ -546,9 +584,6 @@ function restartP2(){
   if(subBar) subBar.style.display='none';
   var ovSubmit = document.getElementById('ov-submit');
   if(ovSubmit) ovSubmit.style.display='none';
-  // 컷씬 iframe 초기화
-  var frame = document.getElementById('cutscene-frame');
-  if(frame) frame.src = '';
   show('s-p2');
   buildP2Grid();
   var badge = document.getElementById('p2-badge');
