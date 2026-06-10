@@ -369,6 +369,42 @@ input[type=text]::placeholder{color:rgba(255,255,255,.3)}
   background:linear-gradient(to right,transparent,rgba(232,25,44,.6),transparent);
 }
 
+/* ── 인라인 컷씬 CSS ── */
+#cs-wrap{position:relative;width:100%;height:100%;overflow:hidden;background:#000}
+#cs-frame-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 0.45s ease}
+@keyframes cs-zoomIn{from{transform:scale(1.0)}to{transform:scale(1.13)}}
+@keyframes cs-panRight{from{transform:scale(1.08) translateX(-3%)}to{transform:scale(1.08) translateX(3%)}}
+#cs-frame-img.cam-zoom-in{animation:cs-zoomIn 5s ease forwards}
+#cs-frame-img.cam-pan-right{animation:cs-panRight 4s ease forwards}
+#cs-vignette{position:absolute;inset:0;z-index:2;pointer-events:none;background:radial-gradient(ellipse at center,transparent 45%,rgba(0,0,0,0.6) 100%)}
+#cs-bar-top,#cs-bar-bottom{position:absolute;left:0;right:0;height:50px;background:#000;z-index:10}
+#cs-bar-top{top:0}#cs-bar-bottom{bottom:0}
+#cs-text-wrap{position:absolute;inset:0;z-index:5;display:flex;align-items:flex-end;justify-content:center;padding-bottom:62px;pointer-events:none}
+#cs-text-wrap.center{align-items:center;padding-bottom:0}
+#cs-text-box{background:rgba(0,0,0,0.6);border-left:3px solid #4af;padding:10px 22px;color:#dff0ff;font-size:15px;letter-spacing:0.08em;line-height:1.9;white-space:pre-line;text-align:center;max-width:88%;opacity:0;transform:translateY(8px);transition:opacity 0.4s ease 0.3s,transform 0.4s ease 0.3s}
+#cs-text-box.show{opacity:1;transform:translateY(0)}
+#cs-text-box.style-center{border-left:none;border-top:1.5px solid #4af;border-bottom:1.5px solid #4af;font-size:17px;letter-spacing:0.15em}
+#cs-prog{position:absolute;inset:0;z-index:6;display:none;flex-direction:column;align-items:center;justify-content:center;gap:20px;background:rgba(0,4,18,0.88);font-family:'Courier New',monospace}
+#cs-prog.on{display:flex}
+.cs-pr{width:380px;max-width:86vw;opacity:0;transform:translateY(10px);transition:opacity 0.35s,transform 0.35s}
+.cs-pr.show{opacity:1;transform:none}
+.cs-pr-label{color:#8df;font-size:12px;letter-spacing:0.1em;margin-bottom:5px}
+.cs-pr-bg{height:11px;background:rgba(0,80,160,0.3);border:1px solid #1a5a99;border-radius:2px;overflow:hidden}
+.cs-pr-fill{height:100%;background:linear-gradient(90deg,#0af,#06e);width:0%;transition:width 0.9s cubic-bezier(.2,.8,.4,1)}
+.cs-pr-pct{color:#4af;font-size:12px;margin-top:3px;text-align:right}
+.cs-pr-final{color:#fff;font-size:14px;letter-spacing:0.2em;text-align:center;opacity:0;transition:opacity 0.5s ease}
+.cs-pr-final.show{opacity:1}
+#cs-hud{position:absolute;bottom:58px;right:14px;z-index:12;display:flex;flex-direction:column;align-items:flex-end;gap:7px}
+#cs-skip-btn{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.18);color:rgba(255,255,255,0.45);font-size:11px;padding:4px 10px;cursor:pointer;letter-spacing:0.1em;transition:all 0.2s}
+#cs-skip-btn:hover{background:rgba(255,255,255,0.15);color:#fff}
+#cs-dots{display:flex;gap:5px}
+.cs-dot{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,0.18);transition:background 0.3s}
+.cs-dot.on{background:#4af}
+#cs-flash{position:absolute;inset:0;background:#fff;opacity:0;z-index:20;pointer-events:none;transition:opacity 0.1s}
+#cs-end{position:absolute;inset:0;background:#000;z-index:30;display:none;flex-direction:column;align-items:center;justify-content:center;gap:18px;color:#fff}
+#cs-end h2{font-size:20px;letter-spacing:0.2em;color:#4af;text-shadow:0 0 20px #4af}
+#cs-end p{font-size:12px;color:rgba(255,255,255,0.45);letter-spacing:0.1em}
+
 </style>
 </head>
 <body>
@@ -666,42 +702,6 @@ input[type=text]::placeholder{color:rgba(255,255,255,.3)}
 
 <!-- 컷씬 (인라인 내장) — #app 안에 위치해야 .scr 적용됨 -->
 <div class="scr" id="s-cutscene" style="background:#000;padding:0;position:relative">
-<style>
-#cs-wrap{position:relative;width:100%;height:100%;overflow:hidden;background:#000}
-#cs-frame-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 0.45s ease}
-@keyframes cs-zoomIn{from{transform:scale(1.0)}to{transform:scale(1.13)}}
-@keyframes cs-panRight{from{transform:scale(1.08) translateX(-3%)}to{transform:scale(1.08) translateX(3%)}}
-#cs-frame-img.cam-zoom-in{animation:cs-zoomIn 5s ease forwards}
-#cs-frame-img.cam-pan-right{animation:cs-panRight 4s ease forwards}
-#cs-vignette{position:absolute;inset:0;z-index:2;pointer-events:none;background:radial-gradient(ellipse at center,transparent 45%,rgba(0,0,0,0.6) 100%)}
-#cs-bar-top,#cs-bar-bottom{position:absolute;left:0;right:0;height:50px;background:#000;z-index:10}
-#cs-bar-top{top:0}#cs-bar-bottom{bottom:0}
-#cs-text-wrap{position:absolute;inset:0;z-index:5;display:flex;align-items:flex-end;justify-content:center;padding-bottom:62px;pointer-events:none}
-#cs-text-wrap.center{align-items:center;padding-bottom:0}
-#cs-text-box{background:rgba(0,0,0,0.6);border-left:3px solid #4af;padding:10px 22px;color:#dff0ff;font-size:15px;letter-spacing:0.08em;line-height:1.9;white-space:pre-line;text-align:center;max-width:88%;opacity:0;transform:translateY(8px);transition:opacity 0.4s ease 0.3s,transform 0.4s ease 0.3s}
-#cs-text-box.show{opacity:1;transform:translateY(0)}
-#cs-text-box.style-center{border-left:none;border-top:1.5px solid #4af;border-bottom:1.5px solid #4af;font-size:17px;letter-spacing:0.15em}
-#cs-prog{position:absolute;inset:0;z-index:6;display:none;flex-direction:column;align-items:center;justify-content:center;gap:20px;background:rgba(0,4,18,0.88);font-family:'Courier New',monospace}
-#cs-prog.on{display:flex}
-.cs-pr{width:380px;max-width:86vw;opacity:0;transform:translateY(10px);transition:opacity 0.35s,transform 0.35s}
-.cs-pr.show{opacity:1;transform:none}
-.cs-pr-label{color:#8df;font-size:12px;letter-spacing:0.1em;margin-bottom:5px}
-.cs-pr-bg{height:11px;background:rgba(0,80,160,0.3);border:1px solid #1a5a99;border-radius:2px;overflow:hidden}
-.cs-pr-fill{height:100%;background:linear-gradient(90deg,#0af,#06e);width:0%;transition:width 0.9s cubic-bezier(.2,.8,.4,1)}
-.cs-pr-pct{color:#4af;font-size:12px;margin-top:3px;text-align:right}
-.cs-pr-final{color:#fff;font-size:14px;letter-spacing:0.2em;text-align:center;opacity:0;transition:opacity 0.5s ease}
-.cs-pr-final.show{opacity:1}
-#cs-hud{position:absolute;bottom:58px;right:14px;z-index:12;display:flex;flex-direction:column;align-items:flex-end;gap:7px}
-#cs-skip-btn{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.18);color:rgba(255,255,255,0.45);font-size:11px;padding:4px 10px;cursor:pointer;letter-spacing:0.1em;transition:all 0.2s}
-#cs-skip-btn:hover{background:rgba(255,255,255,0.15);color:#fff}
-#cs-dots{display:flex;gap:5px}
-.cs-dot{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,0.18);transition:background 0.3s}
-.cs-dot.on{background:#4af}
-#cs-flash{position:absolute;inset:0;background:#fff;opacity:0;z-index:20;pointer-events:none;transition:opacity 0.1s}
-#cs-end{position:absolute;inset:0;background:#000;z-index:30;display:none;flex-direction:column;align-items:center;justify-content:center;gap:18px;color:#fff}
-#cs-end h2{font-size:20px;letter-spacing:0.2em;color:#4af;text-shadow:0 0 20px #4af}
-#cs-end p{font-size:12px;color:rgba(255,255,255,0.45);letter-spacing:0.1em}
-</style>
 
   <div id="cs-wrap">
     <div id="cs-bar-top"></div>
