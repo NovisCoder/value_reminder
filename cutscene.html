@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CEO 최종 결재 컷신</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  background:#000;
+  display:flex; align-items:center; justify-content:center;
+  min-height:100vh;
+  font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif;
+}
+
+#wrap {
+  position:relative;
+  width:800px; max-width:100vw;
+  aspect-ratio:4/3;
+  overflow:hidden;
+  background:#000;
+  box-shadow:0 0 80px rgba(0,140,255,0.12);
+}
+
+#frame-img {
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  object-fit:cover;
+  opacity:0;
+  transition:opacity 0.45s ease;
+}
+@keyframes zoomIn   { from{transform:scale(1.0)}  to{transform:scale(1.13)} }
+@keyframes panRight { from{transform:scale(1.08) translateX(-3%)} to{transform:scale(1.08) translateX(3%)} }
+#frame-img.cam-zoom-in   { animation:zoomIn   5s ease forwards; }
+#frame-img.cam-pan-right { animation:panRight 4s ease forwards; }
+
+#vignette {
+  position:absolute; inset:0; z-index:2; pointer-events:none;
+  background:radial-gradient(ellipse at center, transparent 45%, rgba(0,0,0,0.6) 100%);
+}
+
+#bar-top, #bar-bottom {
+  position:absolute; left:0; right:0;
+  height:50px; background:#000; z-index:10;
+}
+#bar-top    { top:0; }
+#bar-bottom { bottom:0; }
+
+#text-wrap {
+  position:absolute; inset:0; z-index:5;
+  display:flex; align-items:flex-end; justify-content:center;
+  padding-bottom:62px; pointer-events:none;
+}
+#text-wrap.center { align-items:center; padding-bottom:0; }
+
+#text-box {
+  background:rgba(0,0,0,0.6);
+  border-left:3px solid #4af;
+  padding:10px 22px;
+  color:#dff0ff; font-size:15px;
+  letter-spacing:0.08em; line-height:1.9;
+  white-space:pre-line; text-align:center;
+  max-width:88%;
+  opacity:0; transform:translateY(8px);
+  transition:opacity 0.4s ease 0.3s, transform 0.4s ease 0.3s;
+}
+#text-box.show { opacity:1; transform:translateY(0); }
+#text-box.style-center {
+  border-left:none;
+  border-top:1.5px solid #4af;
+  border-bottom:1.5px solid #4af;
+  font-size:17px; letter-spacing:0.15em;
+}
+
+#prog-overlay {
+  position:absolute; inset:0; z-index:6;
+  display:none; flex-direction:column;
+  align-items:center; justify-content:center; gap:20px;
+  background:rgba(0,4,18,0.88);
+  font-family:'Courier New', monospace;
+}
+#prog-overlay.on { display:flex; }
+
+.pr { width:380px; opacity:0; transform:translateY(10px); transition:opacity 0.35s, transform 0.35s; }
+.pr.show { opacity:1; transform:none; }
+.pr-label { color:#8df; font-size:12px; letter-spacing:0.1em; margin-bottom:5px; }
+.pr-bg    { height:11px; background:rgba(0,80,160,0.3); border:1px solid #1a5a99; border-radius:2px; overflow:hidden; }
+.pr-fill  { height:100%; background:linear-gradient(90deg,#0af,#06e); width:0%; transition:width 0.9s cubic-bezier(.2,.8,.4,1); }
+.pr-pct   { color:#4af; font-size:12px; margin-top:3px; text-align:right; }
+.pr-final { color:#fff; font-size:14px; letter-spacing:0.2em; text-align:center; opacity:0; transition:opacity 0.5s ease; }
+.pr-final.show { opacity:1; }
+
+#hud {
+  position:absolute; bottom:58px; right:14px;
+  z-index:12; display:flex; flex-direction:column; align-items:flex-end; gap:7px;
+}
+#skip-btn {
+  background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.18);
+  color:rgba(255,255,255,0.45); font-size:11px; padding:4px 10px;
+  cursor:pointer; letter-spacing:0.1em; transition:all 0.2s;
+}
+#skip-btn:hover { background:rgba(255,255,255,0.15); color:#fff; }
+#dots { display:flex; gap:5px; }
+.dot { width:5px; height:5px; border-radius:50%; background:rgba(255,255,255,0.18); transition:background 0.3s; }
+.dot.on { background:#4af; }
+
+#flash { position:absolute; inset:0; background:#fff; opacity:0; z-index:20; pointer-events:none; transition:opacity 0.1s; }
+
+#start-screen, #end-screen {
+  position:absolute; inset:0; background:#000; z-index:30;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px; color:#fff;
+}
+#end-screen { display:none; }
+#start-screen h2, #end-screen h2 { font-size:20px; letter-spacing:0.2em; color:#4af; text-shadow:0 0 20px #4af; }
+#start-screen p,  #end-screen p  { font-size:12px; color:rgba(255,255,255,0.45); letter-spacing:0.1em; }
+.action-btn {
+  background:transparent; border:1.5px solid #4af; color:#4af;
+  font-size:13px; letter-spacing:0.15em; padding:9px 28px;
+  cursor:pointer; transition:all 0.25s; margin-top:6px;
+}
+.action-btn:hover { background:#4af; color:#000; }
+</style>
+</head>
+<body>
+<div id="wrap">
+  <div id="bar-top"></div>
+  <div id="bar-bottom"></div>
+
+  <img id="frame-img" src="" alt="">
+  <div id="vignette"></div>
+  <div id="text-wrap"><div id="text-box"></div></div>
+
+  <div id="prog-overlay">
+    <div class="pr" id="pr0">
+      <div class="pr-label">기업 성장 예측</div>
+      <div class="pr-bg"><div class="pr-fill" id="pf0"></div></div>
+      <div class="pr-pct" id="pp0">0%</div>
+    </div>
+    <div class="pr" id="pr1">
+      <div class="pr-label">구성원 만족도</div>
+      <div class="pr-bg"><div class="pr-fill" id="pf1"></div></div>
+      <div class="pr-pct" id="pp1">0%</div>
+    </div>
+    <div class="pr" id="pr2">
+      <div class="pr-label">혁신 역량</div>
+      <div class="pr-bg"><div class="pr-fill" id="pf2"></div></div>
+      <div class="pr-pct" id="pp2">0%</div>
+    </div>
+    <div class="pr" id="pr3">
+      <div class="pr-label">최종 경영 성과 계산 중...</div>
+      <div class="pr-bg"><div class="pr-fill" id="pf3"></div></div>
+      <div class="pr-pct" id="pp3">0%</div>
+    </div>
+    <div class="pr-final" id="pf-done">■ 분석 완료 &nbsp;—&nbsp; 결과를 불러오는 중...</div>
+  </div>
+
+  <div id="hud">
+    <button id="skip-btn" onclick="skipCutscene()">SKIP ▶▶</button>
+    <div id="dots"></div>
+  </div>
+  <div id="flash"></div>
+
+  <div id="start-screen">
+    <h2>▶ CEO 최종 결재</h2>
+    <p>2페이즈 결과 분석이 시작됩니다</p>
+    <button class="action-btn" onclick="startCutscene()">▶ &nbsp; 재생</button>
+  </div>
+  <div id="end-screen">
+    <h2>✦ FINAL REPORT 생성 완료</h2>
+    <p>결과 화면으로 이동합니다</p>
+    <button class="action-btn" onclick="replayCutscene()">↺ &nbsp; 다시보기</button>
+  </div>
+</div>
+
+<script>
+// 이미지 경로 — images/ 폴더 기준 (HTML과 같은 디렉토리에 images/ 폴더 위치)
+const FRAMES = [
+  'images/frame_01.png',  // 0  CEO 집무실 야경
+  'images/frame_02.png',  // 1  전략 문서 + 만년필
+  'images/frame_03.png',  // 2  서명된 문서
+  'images/frame_04.png',  // 3  서명하는 손 클로즈업
+  'images/frame_05.png',  // 4  임원 입장 뒷모습
+  'images/frame_06.png',  // 5  회의실 착석 전경
+  'images/frame_07.png',  // 6  AI 스크린 바라보는 임원들
+  'images/frame_08.png',  // 7  만년필 끝 극단 클로즈업
+  'images/frame_09.png',  // 8  CFO 차트 발표
+  'images/frame_10.png',  // 9  CTO 홀로그램
+  'images/frame_11.png',  // 10 화이트보드 토론
+  'images/frame_12.png',  // 11 AI 데이터 시각화 (네온 블루)
+  'images/frame_13.png',  // 12 원탁 회의 — 긴장된 정적
+  'images/frame_14.png',  // 13 봉인된 보고서
+  'images/frame_15.png',  // 14 테이블 위 보고서 + 임원들
+  'images/frame_16.png',  // 15 암전 배경
+];
+
+// 씬 순서 및 연출 정의
+const SCENES = [
+  { frameIdx:0,  duration:2200, text:'최종 의사결정이 확정되었습니다.', textPos:'center', cam:'zoom-in'   },
+  { frameIdx:1,  duration:1700, text:'',                               textPos:'bottom', cam:'zoom-in'   },
+  { frameIdx:7,  duration:1400, text:'',                               textPos:'bottom', cam:'zoom-in'   },
+  { frameIdx:3,  duration:1500, text:'',                               textPos:'bottom', cam:'zoom-in'   }, // ← 서명 플래시
+  { frameIdx:2,  duration:1300, text:'',                               textPos:'bottom', cam:'none'      },
+  { frameIdx:4,  duration:1800, text:'긴급 전략회의 소집',               textPos:'bottom', cam:'pan-right' },
+  { frameIdx:5,  duration:1700, text:'',                               textPos:'bottom', cam:'zoom-in'   },
+  { frameIdx:6,  duration:1900, text:'CEO 최종 의사결정 분석\nInitializing...', textPos:'center', cam:'zoom-in' },
+  { frameIdx:8,  duration:1600, text:'시장 영향 분석 중...',             textPos:'bottom', cam:'none'      },
+  { frameIdx:9,  duration:1600, text:'혁신성 평가 중...',               textPos:'bottom', cam:'none'      },
+  { frameIdx:10, duration:1600, text:'조직문화 영향 분석 중...',          textPos:'bottom', cam:'none'      },
+  { frameIdx:11, duration:2200, text:'미래 성장 시뮬레이션 실행 중...',   textPos:'bottom', cam:'zoom-in'   },
+  // 여기서 프로그레스 UI 삽입 (PROGRESS_INSERT_AFTER = 11)
+  { frameIdx:12, duration:1800, text:'',                               textPos:'bottom', cam:'none'      },
+  { frameIdx:13, duration:2000, text:'',                               textPos:'bottom', cam:'zoom-in'   },
+  { frameIdx:14, duration:1800, text:'',                               textPos:'bottom', cam:'zoom-in'   },
+];
+
+const PROGRESS_INSERT_AFTER = 11;
+
+let cur = 0, timer = null;
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+function buildDots() {
+  const c = document.getElementById('dots');
+  c.innerHTML = '';
+  for (let i = 0; i < SCENES.length + 1; i++) {
+    const d = document.createElement('div');
+    d.className = 'dot'; d.id = 'dot' + i;
+    c.appendChild(d);
+  }
+}
+function setDot(i) {
+  document.querySelectorAll('.dot').forEach(d => d.classList.remove('on'));
+  const el = document.getElementById('dot' + i);
+  if (el) el.classList.add('on');
+}
+
+function startCutscene() {
+  document.getElementById('start-screen').style.display = 'none';
+  cur = 0; buildDots(); playScene(0);
+}
+function replayCutscene() {
+  document.getElementById('end-screen').style.display = 'none';
+  cur = 0; playScene(0);
+}
+function skipCutscene() {
+  clearTimeout(timer);
+  document.getElementById('prog-overlay').classList.remove('on');
+  showEnd();
+}
+
+async function playScene(idx) {
+  if (idx === PROGRESS_INSERT_AFTER + 1) { showProgress(); return; }
+  if (idx >= SCENES.length) { showEnd(); return; }
+
+  const s   = SCENES[idx];
+  const img = document.getElementById('frame-img');
+  const tw  = document.getElementById('text-wrap');
+  const tb  = document.getElementById('text-box');
+
+  setDot(idx <= PROGRESS_INSERT_AFTER ? idx : idx + 1);
+
+  img.style.opacity = '0';
+  tb.classList.remove('show');
+  await sleep(220);
+
+  img.src = FRAMES[s.frameIdx];
+  img.className = '';
+  void img.offsetWidth;
+
+  if (s.cam === 'zoom-in')   img.classList.add('cam-zoom-in');
+  if (s.cam === 'pan-right') img.classList.add('cam-pan-right');
+  img.style.opacity = '1';
+
+  if (s.text) {
+    tb.textContent = s.text;
+    tb.className   = s.textPos === 'center' ? 'style-center' : '';
+    tw.className   = s.textPos === 'center' ? 'center' : '';
+    setTimeout(() => tb.classList.add('show'), 360);
+  } else {
+    tb.textContent = '';
+    tw.className   = '';
+  }
+
+  if (s.frameIdx === 3) setTimeout(flashEffect, s.duration * 0.55);
+
+  timer = setTimeout(() => { cur++; playScene(cur); }, s.duration);
+}
+
+function flashEffect() {
+  const f = document.getElementById('flash');
+  f.style.opacity = '0.8';
+  setTimeout(() => f.style.opacity = '0', 130);
+}
+
+function showProgress() {
+  setDot(PROGRESS_INSERT_AFTER + 1);
+  const ov  = document.getElementById('prog-overlay');
+  const img = document.getElementById('frame-img');
+  document.getElementById('text-box').textContent = '';
+  document.getElementById('text-wrap').className  = '';
+
+  img.style.opacity = '0';
+  setTimeout(() => {
+    img.src = FRAMES[11];
+    img.className = 'cam-zoom-in';
+    img.style.opacity = '0.22';
+  }, 200);
+
+  ov.classList.add('on');
+
+  const bars = [
+    { id:0, pct:73,  delay:400  },
+    { id:1, pct:91,  delay:1500 },
+    { id:2, pct:84,  delay:2600 },
+    { id:3, pct:100, delay:3800 },
+  ];
+  bars.forEach(b => {
+    setTimeout(() => {
+      document.getElementById('pr' + b.id).classList.add('show');
+      setTimeout(() => {
+        document.getElementById('pf' + b.id).style.width = b.pct + '%';
+        countUp('pp' + b.id, b.pct);
+      }, 120);
+    }, b.delay);
+  });
+
+  setTimeout(() => document.getElementById('pf-done').classList.add('show'), 5300);
+
+  setTimeout(() => {
+    ov.classList.remove('on');
+    bars.forEach(b => {
+      document.getElementById('pr' + b.id).classList.remove('show');
+      document.getElementById('pf' + b.id).style.width = '0%';
+      document.getElementById('pp' + b.id).textContent = '0%';
+    });
+    document.getElementById('pf-done').classList.remove('show');
+    cur = PROGRESS_INSERT_AFTER + 1;
+    playScene(cur);
+  }, 6900);
+}
+
+function countUp(id, target) {
+  const el = document.getElementById(id);
+  let v = 0;
+  const step = target / 28;
+  const iv = setInterval(() => {
+    v = Math.min(v + step, target);
+    el.textContent = Math.round(v) + '%';
+    if (v >= target) clearInterval(iv);
+  }, 28);
+}
+
+function showEnd() {
+  const img = document.getElementById('frame-img');
+  const tw  = document.getElementById('text-wrap');
+  const tb  = document.getElementById('text-box');
+  img.style.opacity = '0';
+  tb.classList.remove('show');
+
+  setTimeout(() => {
+    img.src = FRAMES[15];
+    img.className = '';
+    img.style.opacity = '1';
+    tb.textContent = 'FINAL REPORT\n생성 완료';
+    tb.className   = 'style-center';
+    tw.className   = 'center';
+    setTimeout(() => tb.classList.add('show'), 400);
+    const end = document.getElementById('end-screen');
+    end.style.display = 'flex';
+    end.style.opacity = '0';
+    setTimeout(() => { end.style.transition = 'opacity 1.2s'; end.style.opacity = '1'; }, 2300);
+  }, 350);
+}
+</script>
+</body>
+</html>
