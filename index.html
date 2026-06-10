@@ -664,7 +664,7 @@ input[type=text]::placeholder{color:rgba(255,255,255,.3)}
   <!-- 전체 완료 → 결재 확인 팝업은 #app 최상위 레이어로 이동됨 -->
 </div>
 
-<!-- 컷씬 (인라인 내장) -->
+<!-- 컷씬 (인라인 내장) — #app 안에 위치해야 .scr 적용됨 -->
 <div class="scr" id="s-cutscene" style="background:#000;padding:0;position:relative">
 <style>
 #cs-wrap{position:relative;width:100%;height:100%;overflow:hidden;background:#000}
@@ -751,7 +751,7 @@ input[type=text]::placeholder{color:rgba(255,255,255,.3)}
     <div class="wrong-toast-text" id="wrong-toast-msg"></div>
   </div>
 
-  <!-- 결재 확인 팝업 — 최상위 fixed 레이어 -->
+  <!-- 결재 확인 팝업 — position:fixed로 항상 최상위 -->
   <div id="ov-submit" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.78);align-items:flex-end;padding:12px;z-index:200">
     <div class="pop" style="text-align:center">
       <div style="font-size:16px;font-weight:700;color:#fff;margin-bottom:8px">이렇게 결재하시겠습니까?</div>
@@ -762,6 +762,7 @@ input[type=text]::placeholder{color:rgba(255,255,255,.3)}
       </div>
     </div>
   </div>
+
 </div><!-- #app -->
 <script src="data.js"></script>
 <script src="game.js"></script>
