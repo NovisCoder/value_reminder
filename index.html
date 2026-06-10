@@ -371,15 +371,15 @@ input[type=text]::placeholder{color:rgba(255,255,255,.3)}
 
 /* ── 인라인 컷씬 CSS ── */
 #cs-wrap{position:relative;width:100%;height:100%;overflow:hidden;background:#000}
-#cs-frame-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 0.45s ease}
-@keyframes cs-zoomIn{from{transform:scale(1.0)}to{transform:scale(1.13)}}
-@keyframes cs-panRight{from{transform:scale(1.08) translateX(-3%)}to{transform:scale(1.08) translateX(3%)}}
+#cs-frame-img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center;opacity:0;transition:opacity 0.45s ease;background:#000}
+@keyframes cs-zoomIn{from{transform:scale(1.0)}to{transform:scale(1.04)}}
+@keyframes cs-panRight{from{transform:scale(1.02) translateX(-1%)}to{transform:scale(1.02) translateX(1%)}}
 #cs-frame-img.cam-zoom-in{animation:cs-zoomIn 5s ease forwards}
 #cs-frame-img.cam-pan-right{animation:cs-panRight 4s ease forwards}
 #cs-vignette{position:absolute;inset:0;z-index:2;pointer-events:none;background:radial-gradient(ellipse at center,transparent 45%,rgba(0,0,0,0.6) 100%)}
 #cs-bar-top,#cs-bar-bottom{position:absolute;left:0;right:0;height:50px;background:#000;z-index:10}
 #cs-bar-top{top:0}#cs-bar-bottom{bottom:0}
-#cs-text-wrap{position:absolute;inset:0;z-index:5;display:flex;align-items:flex-end;justify-content:center;padding-bottom:62px;pointer-events:none}
+#cs-text-wrap{position:absolute;inset:0;z-index:5;display:flex;align-items:flex-end;justify-content:center;padding-bottom:20px;pointer-events:none}
 #cs-text-wrap.center{align-items:center;padding-bottom:0}
 #cs-text-box{background:rgba(0,0,0,0.6);border-left:3px solid #4af;padding:10px 22px;color:#dff0ff;font-size:15px;letter-spacing:0.08em;line-height:1.9;white-space:pre-line;text-align:center;max-width:88%;opacity:0;transform:translateY(8px);transition:opacity 0.4s ease 0.3s,transform 0.4s ease 0.3s}
 #cs-text-box.show{opacity:1;transform:translateY(0)}
