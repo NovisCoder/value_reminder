@@ -37,27 +37,44 @@ var _r1FirstVisit = true; // 첫 방 진입 여부 플래그
 function gotoR1(){
   show('s-r1');
   updateDots();
+  // r1 이동 버튼 펄스 ON, r2 버튼 펄스 OFF
+  setMovePulse('move-btn-r1', true);
+  setMovePulse('move-btn-r2', false);
   if(_r1FirstVisit){
     _r1FirstVisit = false;
     showNavTooltip();
   }
 }
 
+function gotoR2(){
+  // 툴팁이 떠 있으면 즉시 제거
+  var tip = document.getElementById('nav-tooltip');
+  if(tip) tip.style.display = 'none';
+  show('s-r2');
+  updateDots();
+  checkMeetBtn();
+  // r2 이동 버튼 펄스 ON, r1 버튼 펄스 OFF
+  setMovePulse('move-btn-r2', true);
+  setMovePulse('move-btn-r1', false);
+}
+
+function setMovePulse(id, on){
+  var btn = document.getElementById(id);
+  if(!btn) return;
+  if(on) btn.classList.add('pulse-on');
+  else   btn.classList.remove('pulse-on');
+}
+
+function stopMovePulse(){
+  setMovePulse('move-btn-r1', false);
+  setMovePulse('move-btn-r2', false);
+}
+
 function showNavTooltip(){
   var tip = document.getElementById('nav-tooltip');
-  var btn = document.getElementById('move-btn-r1');
-  if(!tip || !btn) return;
-
-  // 버튼 펄스 효과
-  btn.classList.add('first-pulse');
-  btn.addEventListener('animationend', function(){
-    btn.classList.remove('first-pulse');
-  }, {once: true});
-
-  // 툴팁 표시
+  if(!tip) return;
   tip.style.display = 'block';
   tip.classList.remove('hiding');
-
   // 3.5초 후 페이드아웃
   setTimeout(function(){
     tip.classList.add('hiding');
@@ -66,14 +83,6 @@ function showNavTooltip(){
       tip.classList.remove('hiding');
     }, {once: true});
   }, 3500);
-}
-function gotoR2(){
-  // 혹시 툴팁이 떠 있으면 즉시 제거
-  var tip = document.getElementById('nav-tooltip');
-  if(tip) tip.style.display = 'none';
-  show('s-r2');
-  updateDots();
-  checkMeetBtn();
 }
  
 function correctCount(){
@@ -326,6 +335,7 @@ function nextAwake(){
  
 // ── 2페이즈 ──
 function startP2(){
+  stopMovePulse(); // 1페이즈 이동 버튼 펄스 종료
   G.p2Queue = Object.keys(G.collected).filter(function(id){return G.collected[id].correct;});
   G.choices = {};
   show('s-p2');
@@ -574,6 +584,7 @@ function restartAll(){
   document.getElementById('r-extra').style.display='none';
   // 첫 방문 툴팁 플래그 초기화
   _r1FirstVisit = true;
+  stopMovePulse();
   show('s-intro');
 }
  
