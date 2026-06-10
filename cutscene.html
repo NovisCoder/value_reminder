@@ -106,13 +106,12 @@ body {
 
 #flash { position:absolute; inset:0; background:#fff; opacity:0; z-index:20; pointer-events:none; transition:opacity 0.1s; }
 
-#start-screen, #end-screen {
+#end-screen {
   position:absolute; inset:0; background:#000; z-index:30;
-  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px; color:#fff;
+  display:none; flex-direction:column; align-items:center; justify-content:center; gap:18px; color:#fff;
 }
-#end-screen { display:none; }
-#start-screen h2, #end-screen h2 { font-size:20px; letter-spacing:0.2em; color:#4af; text-shadow:0 0 20px #4af; }
-#start-screen p,  #end-screen p  { font-size:12px; color:rgba(255,255,255,0.45); letter-spacing:0.1em; }
+#end-screen h2 { font-size:20px; letter-spacing:0.2em; color:#4af; text-shadow:0 0 20px #4af; }
+#end-screen p  { font-size:12px; color:rgba(255,255,255,0.45); letter-spacing:0.1em; }
 .action-btn {
   background:transparent; border:1.5px solid #4af; color:#4af;
   font-size:13px; letter-spacing:0.15em; padding:9px 28px;
@@ -160,11 +159,6 @@ body {
   </div>
   <div id="flash"></div>
 
-  <div id="start-screen">
-    <h2>▶ CEO 최종 결재</h2>
-    <p>2페이즈 결과 분석이 시작됩니다</p>
-    <button class="action-btn" onclick="startCutscene()">▶ &nbsp; 재생</button>
-  </div>
   <div id="end-screen">
     <h2>✦ FINAL REPORT 생성 완료</h2>
     <p>결과 화면으로 이동합니다</p>
@@ -234,10 +228,12 @@ function setDot(i) {
   if (el) el.classList.add('on');
 }
 
-function startCutscene() {
-  document.getElementById('start-screen').style.display = 'none';
-  cur = 0; buildDots(); playScene(0);
-}
+// 페이지 로드 즉시 자동 재생
+document.addEventListener('DOMContentLoaded', () => {
+  buildDots();
+  playScene(0);
+});
+
 function replayCutscene() {
   document.getElementById('end-screen').style.display = 'none';
   cur = 0; playScene(0);
