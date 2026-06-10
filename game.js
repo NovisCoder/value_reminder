@@ -384,7 +384,6 @@ function openP2Clue(id){
   var cl = CLUES[id];
   document.getElementById('pp2-tag').textContent = cl.tag;
   document.getElementById('pp2-q').textContent = cl.q;
-  document.getElementById('pp2-body').textContent = cl.real;
  
   var list = document.getElementById('pp2-choices');
   list.innerHTML = '';
