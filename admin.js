@@ -55,7 +55,7 @@ function renderAdmin(logs){
   // CLU1~CLU10 셀 생성
   function choiceCells(l){
     var cells = '';
-    for(var i = 1; i <= 10; i++){
+    for(var i = 1; i <= 8; i++){
       var val = getChoiceForClu(l, i);
       var color = val === '혁신O' ? '#00aa44' : val === '혁신X' ? '#cc3333' : '#aaa';
       cells += '<td style="font-size:12px;text-align:center;color:' + color + ';font-weight:700">' + val + '</td>';
@@ -81,7 +81,7 @@ function renderAdmin(logs){
   var downloadScript = [
     '// SheetJS로 진짜 .xlsx 생성',
     'function downloadExcel(){',
-    '  var header = ["#","이름","접속시각","플레이시간","등급","점수","CLU1","CLU2","CLU3","CLU4","CLU5","CLU6","CLU7","CLU8","CLU9","CLU10"];',
+    '  var header = ["#","이름","접속시각","플레이시간","등급","점수","CLU1","CLU2","CLU3","CLU4","CLU5","CLU6","CLU7","CLU8"];',
     '  var data = [header];',
     '  document.querySelectorAll("tbody tr").forEach(function(tr){',
     '    var tds = tr.querySelectorAll("td");',
@@ -94,7 +94,7 @@ function renderAdmin(logs){
     '  // 컬럼 너비 자동 설정',
     '  ws["!cols"] = [',
     '    {wch:4},{wch:12},{wch:20},{wch:12},{wch:6},{wch:6},',
-    '    {wch:7},{wch:7},{wch:7},{wch:7},{wch:7},{wch:7},{wch:7},{wch:7},{wch:7},{wch:7}',
+    '    {wch:7},{wch:7},{wch:7},{wch:7},{wch:7},{wch:7},{wch:7},{wch:7}',
     '  ];',
     '  var wb = XLSX.utils.book_new();',
     '  XLSX.utils.book_append_sheet(wb, ws, "플레이로그");',
@@ -167,9 +167,9 @@ function renderAdmin(logs){
     '<th>등급</th>',
     '<th>점수</th>',
     '<th>CLU1</th><th>CLU2</th><th>CLU3</th><th>CLU4</th><th>CLU5</th>',
-    '<th>CLU6</th><th>CLU7</th><th>CLU8</th><th>CLU9</th><th>CLU10</th>',
+    '<th>CLU6</th><th>CLU7</th><th>CLU8</th>',
     '</tr></thead><tbody>',
-    (rows || '<tr><td colspan="16" style="text-align:center;color:#999;padding:20px">아직 플레이 기록이 없습니다</td></tr>'),
+    (rows || '<tr><td colspan="14" style="text-align:center;color:#999;padding:20px">아직 플레이 기록이 없습니다</td></tr>'),
     '</tbody></table>',
     '</div>',
     '<script>',
