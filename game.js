@@ -103,7 +103,7 @@ function updateDots(){
 }
  
 function checkMeetBtn(){
-  var ok = correctCount() >= 10;
+  var ok = correctCount() >= 8;
   var mw1 = document.getElementById('meet-wrap-r1');
   var mw2 = document.getElementById('meet-wrap');
   if(mw1) mw1.style.display = ok ? 'block' : 'none';
@@ -175,7 +175,7 @@ function collect(room){
 var BOSS = [
   {t:'line', tx:'어두운 주차장. 검은 차 안.'},
   {t:'line', tx:'데빌 게임즈 빅보스가 기다리고 있다.'},
-  {t:'line', tx:'클루 10개를 모두 전달했다.'},
+  {t:'line', tx:'클루 8개를 모두 전달했다.'},
   {t:'dlg',  sp:'빅보스 (데빌 게임즈)', tx:'수고했어. 이번엔 끝났어. 역시 믿을 만해.'},
   {t:'sp'},
   {t:'switch-gun'},
@@ -484,12 +484,12 @@ function calcResult(){
     p2 += ch.score;
     if(ch.score===0) traps++;
   });
-  p2 = Math.min(60, p2);
+  p2 = Math.min(40, p2);
  
   var pen=0;
   if(traps>=4) pen+=5;
-  var total = Math.max(0, Math.min(60, p2-pen));
-  var grade = total>=54?'S':total>=42?'A':total>=30?'B':total>=18?'C':'D';
+  var total = Math.max(0, Math.min(40, p2-pen));
+  var grade = total>=36?'S':total>=26?'A':total>=16?'B':total>=6?'C':'D';
  
   saveLog(total, grade);
  
@@ -511,7 +511,7 @@ function calcResult(){
  
   document.getElementById('r-grade').textContent = grade;
   document.getElementById('r-grade').style.color = gColors[grade];
-  document.getElementById('r-score').textContent = total+'점 / 60점';
+  document.getElementById('r-score').textContent = total+'점 / 40점';
   document.getElementById('r-title').textContent = gTitles[grade];
   document.getElementById('r-body').textContent = gBodies[grade];
  
