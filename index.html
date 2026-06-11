@@ -459,7 +459,7 @@ input[type=text]::placeholder{color:rgba(255,255,255,.3)}
       <div class="dots" id="dr1"></div>
     </div>
     <div style="display:flex;gap:8px;align-items:center">
-      <div class="badge"><span id="cnt1">0</span>/10</div>
+      <div class="badge"><span id="cnt1">0</span>/8</div>
       <button class="move-btn" id="move-btn-r1" onclick="gotoR2()">집무실 →</button>
     </div>
   </div>
@@ -503,14 +503,6 @@ input[type=text]::placeholder{color:rgba(255,255,255,.3)}
       onclick="openPop('04',1)">
       <rect class="clue-hit" x="1" y="1" width="98" height="98" rx="3"/>
       <rect class="clue-border" x="1" y="1" width="98" height="98" rx="3" style="animation-delay:.9s,.9s"/>
-    </svg>
-
-    <!-- 05: 테이블 오른쪽 하단 서류 (left~56%, top~63%) -->
-    <svg id="h-05" class="hs-svg" viewBox="0 0 100 100" preserveAspectRatio="none"
-      style="left:53%;top:60%;width:13%;height:9%;position:absolute;overflow:visible"
-      onclick="openPop('05',1)">
-      <rect class="clue-hit" x="1" y="1" width="98" height="98" rx="3"/>
-      <rect class="clue-border" x="1" y="1" width="98" height="98" rx="3" style="animation-delay:1.2s,1.2s"/>
     </svg>
 
     <!-- 11: 테이블 왼쪽 스마트폰 (left~21%, top~78%) -->
@@ -562,13 +554,21 @@ input[type=text]::placeholder{color:rgba(255,255,255,.3)}
       <div class="dots" id="dr2"></div>
     </div>
     <div style="display:flex;gap:8px;align-items:center">
-      <div class="badge"><span id="cnt2">0</span>/10</div>
+      <div class="badge"><span id="cnt2">0</span>/8</div>
       <button class="move-btn" id="move-btn-r2" onclick="gotoR1()">← 회의실</button>
     </div>
   </div>
   <div class="room" id="room2">
     <img src="images/room2_office.jpg" alt="임원 집무실">
     <!-- 방2 SVG 테두리 핫스팟 (물건 윤곽선 방식) -->
+
+    <!-- 05: 책상 운영비 내역서 (left~75%, top~55%) -->
+    <svg id="h-05" class="hs-svg" viewBox="0 0 100 100" preserveAspectRatio="none"
+      style="left:72%;top:52%;width:14%;height:10%;position:absolute;overflow:visible"
+      onclick="openPop('05',2)">
+      <rect class="clue-hit" x="1" y="1" width="98" height="98" rx="3"/>
+      <rect class="clue-border" x="1" y="1" width="98" height="98" rx="3" style="animation-delay:1.5s,1.5s"/>
+    </svg>
 
     <!-- 06: 코르크보드 왼쪽 서류들 (left~14%, top~15%) -->
     <svg id="h-06" class="hs-svg" viewBox="0 0 100 100" preserveAspectRatio="none"
