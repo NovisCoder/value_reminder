@@ -702,35 +702,21 @@ input[type=text]::placeholder{color:rgba(255,255,255,.3)}
   <!-- 전체 완료 → 결재 확인 팝업은 #app 최상위 레이어로 이동됨 -->
 </div>
 
-<!-- 컷씬 (인라인 내장) — #app 안에 위치해야 .scr 적용됨 -->
-<div class="scr" id="s-cutscene" style="background:#000;padding:0">
+<!-- 컷씬 (영상) — #app 안에 위치해야 .scr 적용됨 -->
+<div class="scr" id="s-cutscene" style="background:#000;padding:0;position:relative">
+  <video id="cs-video"
+    src="images/cutscene.mp4"
+    playsinline
+    preload="auto"
+    style="width:100%;height:100%;object-fit:cover;display:block">
+  </video>
 
-  <div id="cs-wrap">
-    <div id="cs-bar-top"></div>
-    <div id="cs-bar-bottom"></div>
-    <img id="cs-frame-img" src="" alt="">
-    <div id="cs-vignette"></div>
-    <div id="cs-text-wrap"><div id="cs-text-box"></div></div>
-
-    <div id="cs-prog">
-      <div class="cs-pr" id="cs-pr0"><div class="cs-pr-label">기업 성장 예측</div><div class="cs-pr-bg"><div class="cs-pr-fill" id="cs-pf0"></div></div><div class="cs-pr-pct" id="cs-pp0">0%</div></div>
-      <div class="cs-pr" id="cs-pr1"><div class="cs-pr-label">구성원 만족도</div><div class="cs-pr-bg"><div class="cs-pr-fill" id="cs-pf1"></div></div><div class="cs-pr-pct" id="cs-pp1">0%</div></div>
-      <div class="cs-pr" id="cs-pr2"><div class="cs-pr-label">혁신 역량</div><div class="cs-pr-bg"><div class="cs-pr-fill" id="cs-pf2"></div></div><div class="cs-pr-pct" id="cs-pp2">0%</div></div>
-      <div class="cs-pr" id="cs-pr3"><div class="cs-pr-label">최종 경영 성과 계산 중...</div><div class="cs-pr-bg"><div class="cs-pr-fill" id="cs-pf3"></div></div><div class="cs-pr-pct" id="cs-pp3">0%</div></div>
-      <div class="cs-pr-final" id="cs-pf-done">■ 분석 완료 &nbsp;—&nbsp; 결과를 불러오는 중...</div>
-    </div>
-
-    <div id="cs-hud">
-      <button id="cs-skip-btn" onclick="csSkip()">SKIP ▶▶</button>
-      <div id="cs-dots"></div>
-    </div>
-    <div id="cs-flash"></div>
-
-    <div id="cs-end">
-      <h2>✦ FINAL REPORT 생성 완료</h2>
-      <p>결과 화면으로 이동합니다</p>
-      <button class="action-btn" onclick="csReplay()" style="background:transparent;border:1.5px solid #4af;color:#4af;font-size:13px;letter-spacing:0.15em;padding:9px 28px;cursor:pointer">↺ &nbsp; 다시보기</button>
-    </div>
+  <!-- 영상 재생 완료 후에만 표시되는 Skip 버튼 -->
+  <div id="cs-skip-wrap" style="display:none;position:absolute;bottom:40px;left:0;right:0;display:none;align-items:center;justify-content:center">
+    <button id="cs-skip-btn" onclick="csSkip()"
+      style="padding:14px 40px;background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.5);border-radius:8px;color:#fff;font-size:15px;font-weight:700;letter-spacing:.1em;cursor:pointer">
+      결과 보기 →
+    </button>
   </div>
 </div>
 
@@ -770,184 +756,50 @@ input[type=text]::placeholder{color:rgba(255,255,255,.3)}
 <script src="game.js"></script>
 <script src="admin.js"></script>
 <script>
-// ── 인라인 컷씬 엔진 ──
-var CS_FRAMES = [
-  'images/frame_01.png','images/frame_02.png','images/frame_03.png',
-  'images/frame_04.png','images/frame_05.png','images/frame_06.png',
-  'images/frame_07.png','images/frame_08.png','images/frame_09.png',
-  'images/frame_10.png','images/frame_11.png','images/frame_12.png',
-  'images/frame_13.png','images/frame_14.png','images/frame_15.png',
-  'images/frame_16.png'
-];
-var CS_SCENES = [
-  {fi:0,  dur:2200, text:'최종 의사결정이 확정되었습니다.', pos:'center', cam:'zoom-in'},
-  {fi:1,  dur:1700, text:'',                               pos:'bottom', cam:'zoom-in'},
-  {fi:7,  dur:1400, text:'',                               pos:'bottom', cam:'zoom-in'},
-  {fi:3,  dur:1500, text:'',                               pos:'bottom', cam:'zoom-in'},
-  {fi:2,  dur:1300, text:'',                               pos:'bottom', cam:'none'},
-  {fi:4,  dur:1800, text:'긴급 전략회의 소집',               pos:'bottom', cam:'pan-right'},
-  {fi:5,  dur:1700, text:'',                               pos:'bottom', cam:'zoom-in'},
-  {fi:6,  dur:1900, text:'CEO 최종 의사결정 분석\nInitializing...', pos:'center', cam:'zoom-in'},
-  {fi:8,  dur:1600, text:'시장 영향 분석 중...',             pos:'bottom', cam:'none'},
-  {fi:9,  dur:1600, text:'혁신성 평가 중...',               pos:'bottom', cam:'none'},
-  {fi:10, dur:1600, text:'조직문화 영향 분석 중...',          pos:'bottom', cam:'none'},
-  {fi:11, dur:2200, text:'미래 성장 시뮬레이션 실행 중...',   pos:'bottom', cam:'zoom-in'},
-  // index 12 = progress bar 삽입 지점
-  {fi:12, dur:1800, text:'', pos:'bottom', cam:'none'},
-  {fi:13, dur:2000, text:'', pos:'bottom', cam:'zoom-in'},
-  {fi:14, dur:1800, text:'', pos:'bottom', cam:'zoom-in'}
-];
-var CS_PROG_AFTER = 11;
-var csCur = 0, csTimer = null, csEndTimer = null;
+// ── 컷씬 엔진 (영상 기반) ──
 
 function csStart() {
-  csCur = 0;
-  // 프로그레스 바 초기화
-  for(var i=0;i<4;i++){
-    var pr=document.getElementById('cs-pr'+i);
-    var pf=document.getElementById('cs-pf'+i);
-    var pp=document.getElementById('cs-pp'+i);
-    if(pr) pr.classList.remove('show');
-    if(pf) pf.style.width='0%';
-    if(pp) pp.textContent='0%';
-  }
-  var done=document.getElementById('cs-pf-done');
-  if(done) done.classList.remove('show','blink');
-  document.getElementById('cs-end').style.display='none';
-  document.getElementById('cs-prog').classList.remove('on');
-  // 도트 생성
-  var dc=document.getElementById('cs-dots');
-  dc.innerHTML='';
-  for(var j=0;j<CS_SCENES.length+1;j++){
-    var d=document.createElement('div');
-    d.className='cs-dot'; d.id='cs-dot'+j; dc.appendChild(d);
-  }
-  csPlayScene(0);
-}
+  var video = document.getElementById('cs-video');
+  var skipWrap = document.getElementById('cs-skip-wrap');
 
-function csDot(i){
-  document.querySelectorAll('.cs-dot').forEach(function(d){d.classList.remove('on');});
-  var el=document.getElementById('cs-dot'+i);
-  if(el) el.classList.add('on');
-}
+  // Skip 버튼 숨기고, 영상 처음부터 재생
+  skipWrap.style.display = 'none';
+  video.currentTime = 0;
 
-function csPlayScene(idx){
-  if(idx === CS_PROG_AFTER+1){ csShowProgress(); return; }
-  if(idx >= CS_SCENES.length){ csShowEnd(); return; }
-  var s=CS_SCENES[idx];
-  var img=document.getElementById('cs-frame-img');
-  var tw=document.getElementById('cs-text-wrap');
-  var tb=document.getElementById('cs-text-box');
-  csDot(idx <= CS_PROG_AFTER ? idx : idx+1);
-  img.style.opacity='0';
-  tb.classList.remove('show');
-  setTimeout(function(){
-    img.src=CS_FRAMES[s.fi];
-    img.className='';
-    void img.offsetWidth;
-    if(s.cam==='zoom-in')   img.classList.add('cam-zoom-in');
-    if(s.cam==='pan-right') img.classList.add('cam-pan-right');
-    img.style.opacity='1';
-    if(s.text){
-      tb.textContent=s.text;
-      tb.className = s.pos==='center' ? 'style-center' : '';
-      tw.className = s.pos==='center' ? 'center' : '';
-      setTimeout(function(){tb.classList.add('show');},360);
-    } else {
-      tb.textContent=''; tw.className='';
-    }
-    if(s.fi===3) setTimeout(csFlash, s.dur*0.55);
-    csTimer=setTimeout(function(){ csCur++; csPlayScene(csCur); }, s.dur);
-  }, 220);
-}
+  // 영상 재생 완료 시 Skip 버튼 표시
+  video.onended = function() {
+    skipWrap.style.display = 'flex';
+  };
 
-function csFlash(){
-  var f=document.getElementById('cs-flash');
-  f.style.opacity='0.8';
-  setTimeout(function(){f.style.opacity='0';},130);
-}
+  // 재생 오류 시에도 Skip 버튼 표시 (fallback)
+  video.onerror = function() {
+    skipWrap.style.display = 'flex';
+  };
 
-function csShowProgress(){
-  csDot(CS_PROG_AFTER+1);
-  var ov=document.getElementById('cs-prog');
-  var img=document.getElementById('cs-frame-img');
-  document.getElementById('cs-text-box').textContent='';
-  document.getElementById('cs-text-wrap').className='';
-  img.style.opacity='0';
-  setTimeout(function(){
-    img.src=CS_FRAMES[11];
-    img.className='cam-zoom-in';
-    img.style.opacity='0.22';
-  },200);
-  ov.classList.add('on');
-  var bars=[{id:0,pct:73,delay:400},{id:1,pct:91,delay:1500},{id:2,pct:84,delay:2600},{id:3,pct:100,delay:3800}];
-  bars.forEach(function(b){
-    setTimeout(function(){
-      document.getElementById('cs-pr'+b.id).classList.add('show');
-      setTimeout(function(){
-        document.getElementById('cs-pf'+b.id).style.width=b.pct+'%';
-        csCountUp('cs-pp'+b.id, b.pct);
-      },120);
-    }, b.delay);
+  video.play().catch(function() {
+    // 자동재생 차단 시 Skip 버튼을 바로 표시
+    skipWrap.style.display = 'flex';
   });
-  // 5300ms 후 "분석 완료" 텍스트 표시 + 깜빡임 (SKIP으로만 넘어감)
-  setTimeout(function(){
-    var done = document.getElementById('cs-pf-done');
-    done.classList.add('show');
-    setTimeout(function(){ done.classList.add('blink'); }, 600);
-  }, 5300);
 }
 
-function csCountUp(id, target){
-  var el=document.getElementById(id);
-  var v=0, step=target/28;
-  var iv=setInterval(function(){
-    v=Math.min(v+step,target);
-    el.textContent=Math.round(v)+'%';
-    if(v>=target) clearInterval(iv);
-  },28);
-}
-
-function csShowEnd(){
-  var img=document.getElementById('cs-frame-img');
-  var tw=document.getElementById('cs-text-wrap');
-  var tb=document.getElementById('cs-text-box');
-  img.style.opacity='0';
-  tb.classList.remove('show');
-  setTimeout(function(){
-    img.src=CS_FRAMES[15];
-    img.className='';
-    img.style.opacity='1';
-    tb.textContent='FINAL REPORT\n생성 완료';
-    tb.className='style-center';
-    tw.className='center';
-    setTimeout(function(){tb.classList.add('show');},400);
-    var end=document.getElementById('cs-end');
-    end.style.display='flex';
-    end.style.opacity='0';
-    setTimeout(function(){end.style.transition='opacity 1.2s';end.style.opacity='1';},2300);
-    // 3.5초 후 자동으로 결과 화면으로 이동
-    csEndTimer=setTimeout(function(){
-      csEndTimer=null;
-      calcResult();
-    },3500);
-  },350);
-}
-
-function csSkip(){
-  clearTimeout(csTimer);
-  clearTimeout(csEndTimer);
-  csEndTimer=null;
-  var ov=document.getElementById('cs-prog');
-  ov.classList.remove('on');
-  var done=document.getElementById('cs-pf-done');
-  done.classList.remove('show','blink');
+function csSkip() {
+  var video = document.getElementById('cs-video');
+  video.pause();
+  video.onended = null;
+  video.onerror = null;
   calcResult();
 }
 
-function csReplay(){
-  if(csEndTimer){ clearTimeout(csEndTimer); csEndTimer=null; }
-  csStart();
+function csVideoReset() {
+  var video = document.getElementById('cs-video');
+  if (video) {
+    video.pause();
+    video.currentTime = 0;
+    video.onended = null;
+    video.onerror = null;
+  }
+  var skipWrap = document.getElementById('cs-skip-wrap');
+  if (skipWrap) skipWrap.style.display = 'none';
 }
 </script>
 </body>

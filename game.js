@@ -585,6 +585,8 @@ function restartAll(){
   // 첫 방문 툴팁 플래그 초기화
   _r1FirstVisit = true;
   stopMovePulse();
+  // 컷씬 영상 초기화
+  if(typeof csVideoReset === 'function') csVideoReset();
   show('s-intro');
 }
  
@@ -595,6 +597,8 @@ function restartP2(){
   if(subBar) subBar.style.display='none';
   var ovSubmit = document.getElementById('ov-submit');
   if(ovSubmit) ovSubmit.style.display='none';
+  // 컷씬 영상 초기화
+  if(typeof csVideoReset === 'function') csVideoReset();
   show('s-p2');
   buildP2Grid();
   var badge = document.getElementById('p2-badge');
