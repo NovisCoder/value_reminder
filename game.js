@@ -389,19 +389,28 @@ function openP2Clue(id){
   list.innerHTML = '';
  
   var prev = G.choices[id];
- 
-  cl.choices.forEach(function(ch, i){
+
+  // 보기 순서 랜덤 셔플 (원본 배열은 건드리지 않음)
+  var shuffled = cl.choices.map(function(ch, i){ return {ch: ch, origIdx: i}; });
+  if(Math.random() < 0.5){ shuffled = [shuffled[1], shuffled[0]]; }
+
+  shuffled.forEach(function(item, displayIdx){
+    var ch = item.ch;
+    var origIdx = item.origIdx;
+    // 이전에 선택한 보기가 이 칸인지 origIdx 기준으로 확인
+    var isSelected = prev && prev.origIdx === origIdx;
     var btn = document.createElement('button');
-    btn.className = 'ch-btn' + (prev && prev.idx===i ? (ch.s>0?' sel':' trap') : '');
-    btn.textContent = (i===0?'A. ':'B. ') + ch.txt;
-    btn.onclick = (function(cid, ci, cs){ return function(){
-      G.choices[cid] = {idx:ci, score:cs, ts:Date.now()};
-      list.querySelectorAll('.ch-btn').forEach(function(b,j){
-        b.className = 'ch-btn'+(j===ci?(cs>0?' sel':' trap'):'');
+    btn.className = 'ch-btn' + (isSelected ? (ch.s>0?' sel':' trap') : '');
+    btn.textContent = (displayIdx===0?'A. ':'B. ') + ch.txt;
+    btn.onclick = (function(cid, oi, cs){ return function(){
+      // origIdx와 score를 함께 저장
+      G.choices[cid] = {origIdx: oi, score: cs, ts: Date.now()};
+      list.querySelectorAll('.ch-btn').forEach(function(b, j){
+        b.className = 'ch-btn' + (j===displayIdx ? (cs>0?' sel':' trap') : '');
       });
       setTimeout(function(){
         document.getElementById('ov-p2').style.display='none';
-        updateP2Card(cid, ci, cs);
+        updateP2Card(cid, oi, cs);
         updateP2Progress();
         var next = G.p2Queue.find(function(nid){ return !G.choices[nid]; });
         if(next){
@@ -409,7 +418,7 @@ function openP2Clue(id){
           if(nc) nc.style.animation = 'cardPulse 1.4s ease-in-out infinite';
         }
       }, 450);
-    };})(id, i, ch.s);
+    };})(id, origIdx, ch.s);
     list.appendChild(btn);
   });
  
@@ -585,8 +594,6 @@ function restartAll(){
   // 첫 방문 툴팁 플래그 초기화
   _r1FirstVisit = true;
   stopMovePulse();
-  // 컷씬 영상 초기화
-  if(typeof csVideoReset === 'function') csVideoReset();
   show('s-intro');
 }
  
@@ -597,8 +604,6 @@ function restartP2(){
   if(subBar) subBar.style.display='none';
   var ovSubmit = document.getElementById('ov-submit');
   if(ovSubmit) ovSubmit.style.display='none';
-  // 컷씬 영상 초기화
-  if(typeof csVideoReset === 'function') csVideoReset();
   show('s-p2');
   buildP2Grid();
   var badge = document.getElementById('p2-badge');
