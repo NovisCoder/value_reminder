@@ -287,7 +287,7 @@ function addAwakeStep(){
     bg.style.backgroundImage = 'linear-gradient(rgba(0,0,0,.6),rgba(0,0,0,.6)), url('+(p2img ? p2img.src : 'images/room_p2.jpg')+')';
     bg.style.backgroundSize = 'cover';
     bg.style.backgroundPosition = 'center';
-    var d=document.createElement('div'); d.className='cl on'; d.style.color='rgba(255,255,255,.6)'; d.style.fontSize='12px'; d.textContent='[ ILLUTIONIST CEO OFFICE ]'; el.appendChild(d);
+    var d=document.createElement('div'); d.className='cl on'; d.style.color='rgba(255,255,255,.6)'; d.style.fontSize='12px'; d.textContent='[ ILLUSIONIST CEO OFFICE ]'; el.appendChild(d);
  
   } else if(step.t === 'line'){
     var d=document.createElement('div');
