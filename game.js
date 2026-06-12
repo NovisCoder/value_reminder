@@ -625,12 +625,6 @@ function calcResult(){
   document.getElementById('r-title').textContent = gTitles[grade];
   document.getElementById('r-body').textContent = gBodies[grade];
  
-  var extra = document.getElementById('r-extra');
-  if(grade==='D' && traps>=4){
-    extra.style.display='block';
-    extra.textContent='당신이 선택한 방법들은 — Kodak, Nokia, Blockbuster의 경영진도 같은 논리로 선택했습니다.';
-  } else { extra.style.display='none'; }
- 
   show('s-result');
 }
  
