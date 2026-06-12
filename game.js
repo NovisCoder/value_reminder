@@ -1,3 +1,68 @@
+// ══════════════════════════════════════════════
+// 🔊 사운드 매니저
+// 파일 교체 시 SOUND_FILES 의 경로만 수정하세요
+// ══════════════════════════════════════════════
+var SOUND_BASE = 'https://raw.githubusercontent.com/NovisCoder/kill-the-company/main/sound/';
+
+var SOUND_FILES = {
+  title:  'tittle bgm.wav',   // 1. 메인화면 오프닝 테마 (반복)
+  phase1: '1phase.wav',       // 2. 1페이즈 배경음악 (반복)
+  awake:  'awake.wav',        // 3. 빅보스 씬 배경음악 (반복)
+  gun:    'gun.mp3',          // 4. 총 발사 효과음 (1회)
+  phase2: '2phase.wav',       // 5. 2페이즈(사장실) 배경음악 (반복)
+  click:  'clicksound.wav'    // 6. 클릭/터치 효과음
+};
+
+var _sounds = {};      // Audio 객체 캐시
+var _currentBgm = null; // 현재 재생 중인 BGM 키
+
+function _getAudio(key) {
+  if (!_sounds[key]) {
+    _sounds[key] = new Audio(SOUND_BASE + SOUND_FILES[key]);
+  }
+  return _sounds[key];
+}
+
+/** BGM 재생 (loop). 이미 같은 트랙이면 무시 */
+function playBgm(key) {
+  if (_currentBgm === key) return;
+  stopBgm();
+  var a = _getAudio(key);
+  a.loop = true;
+  a.currentTime = 0;
+  a.play().catch(function(){});
+  _currentBgm = key;
+}
+
+/** BGM 정지 */
+function stopBgm() {
+  if (!_currentBgm) return;
+  var a = _getAudio(_currentBgm);
+  a.pause();
+  a.currentTime = 0;
+  _currentBgm = null;
+}
+
+/** 효과음 1회 재생 */
+function playSfx(key) {
+  var a = _getAudio(key);
+  a.loop = false;
+  a.currentTime = 0;
+  a.play().catch(function(){});
+}
+
+/** 클릭 효과음 — 게임 진행 중(인트로 제외)에만 재생 */
+function _clickSfx() {
+  var intro = document.getElementById('s-intro');
+  if (intro && intro.classList.contains('on')) return; // 인트로는 제외
+  playSfx('click');
+}
+
+// ── 전역 클릭/터치 이벤트에 클릭음 연결 ──
+document.addEventListener('click',   _clickSfx, true);
+document.addEventListener('touchend', _clickSfx, true);
+
+// ══════════════════════════════════════════════
 // ── Supabase 설정 ──
 // 아래 두 줄을 본인 Supabase 프로젝트 값으로 교체하세요
 var SUPABASE_URL = 'https://ypdiwxklslaeqxjcwtzs.supabase.co';
@@ -7,6 +72,18 @@ function show(id){
   document.querySelectorAll('.scr').forEach(function(s){s.classList.remove('on');});
   document.getElementById(id).classList.add('on');
 }
+
+// 페이지 로드 시 title BGM 자동 시작
+// (브라우저 자동재생 정책 때문에 첫 클릭/터치 이후 재생)
+(function(){
+  function _startTitle(){
+    playBgm('title');
+    document.removeEventListener('click',   _startTitle, true);
+    document.removeEventListener('touchend', _startTitle, true);
+  }
+  document.addEventListener('click',   _startTitle, true);
+  document.addEventListener('touchend', _startTitle, true);
+})();
  
 // ── 인트로 → 브리핑 ──
 function startGame(){
@@ -19,6 +96,9 @@ function startGame(){
   ['images/cat_surp.jpg', 'images/cat_smile.jpg'].forEach(function(src){
     var img = new Image(); img.src = src;
   });
+  // 🔊 title BGM → phase1 BGM 전환
+  stopBgm();
+  playBgm('phase1');
   show('s-brief');
   runBrief();
 }
@@ -194,6 +274,9 @@ function gotoBoss(){
   var gun  = document.getElementById('boss-img-gun');
   if(meet) meet.style.opacity='1';
   if(gun)  gun.style.opacity='0';
+  // 🔊 phase1 BGM → awake BGM 전환
+  stopBgm();
+  playBgm('awake');
   show('s-boss');
   addBossStep();
 }
@@ -218,6 +301,10 @@ function addBossStep(){
     d.style.textShadow = '0 1px 8px rgba(0,0,0,.8)';
     d.textContent = step.tx;
     el.appendChild(d);
+    // 🔊 '눈을 가린다' 텍스트 등장 시 총소리 1회
+    if(step.tx && step.tx.indexOf('눈을 가린다') !== -1){
+      playSfx('gun');
+    }
   } else if(step.t === 'dlg'){
     var box = document.createElement('div');
     box.className = 'dlg';
@@ -343,6 +430,9 @@ function startP2(){
   stopMovePulse(); // 1페이즈 이동 버튼 펄스 종료
   G.p2Queue = Object.keys(G.collected).filter(function(id){return G.collected[id].correct;});
   G.choices = {};
+  // 🔊 awake BGM → phase2 BGM 전환 (비서 이노 첫 등장 = 2페이즈 시작)
+  stopBgm();
+  playBgm('phase2');
   show('s-p2');
   buildP2Grid();
   document.getElementById('p2-badge').textContent = '0/'+G.p2Queue.length;
@@ -482,6 +572,8 @@ function closeSubmitPop(){
 function doSubmit(){
   document.getElementById('ov-submit').style.display='none';
   revealP2Results();
+  // 🔊 phase2 BGM 정지 → 컷씬 시작
+  stopBgm();
   // 800ms 후 컷씬 시작
   setTimeout(function(){
     show('s-cutscene');
@@ -564,6 +656,9 @@ function saveLog(score, grade){
  
 // ── 다시하기 ──
 function restartAll(){
+  // 🔊 모든 사운드 초기화 → title BGM 복귀
+  stopBgm();
+  playBgm('title');
   G = {name:'',startTime:0,collected:{},choices:{},activePop:null,activeRoom:0,bossStep:0,awakeStep:0,p2Queue:[],p2Cursor:0};
   document.getElementById('inp-name').value='';
   document.getElementById('brief-go').style.display='none';
@@ -602,6 +697,9 @@ function restartAll(){
 }
  
 function restartP2(){
+  // 🔊 phase2 BGM 복귀
+  stopBgm();
+  playBgm('phase2');
   G.choices={};
   G.p2Queue = Object.keys(G.collected).filter(function(id){return G.collected[id].correct;});
   var subBar = document.getElementById('sub-bar');
