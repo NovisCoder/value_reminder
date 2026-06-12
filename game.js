@@ -53,9 +53,7 @@ function playSfx(key) {
 
 /** 클릭 효과음 — 게임 진행 중(인트로 제외)에만 재생 */
 function _clickSfx() {
-  var intro = document.getElementById('s-intro');
-  if (intro && intro.classList.contains('on')) return; // 인트로는 제외
-  playSfx('click');
+  playSfx('click'); // 인트로 포함 모든 화면에서 재생
 }
 
 // ── 전역 클릭/터치 이벤트에 클릭음 연결 ──
