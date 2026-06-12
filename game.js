@@ -71,17 +71,22 @@ function show(id){
   document.getElementById(id).classList.add('on');
 }
 
-// 페이지 로드 시 title BGM 자동 시작
-// (브라우저 자동재생 정책 때문에 첫 클릭/터치 이후 재생)
-(function(){
-  function _startTitle(){
-    playBgm('title');
-    document.removeEventListener('click',   _startTitle, true);
-    document.removeEventListener('touchend', _startTitle, true);
-  }
-  document.addEventListener('click',   _startTitle, true);
-  document.addEventListener('touchend', _startTitle, true);
-})();
+// ── 시작하기 버튼 ──
+// 플레이어가 "시작하기"를 누르는 순간 = 첫 인터랙션 → title BGM 즉시 재생
+function enterGame(){
+  // 🔊 title BGM 시작 (클릭 이벤트 내부라 브라우저 정책 통과)
+  playBgm('title');
+  // 시작하기 버튼 숨기고 로그인 필드 표시
+  var btnEnter = document.getElementById('btn-enter');
+  var loginFields = document.getElementById('login-fields');
+  if(btnEnter) btnEnter.style.display = 'none';
+  if(loginFields) loginFields.style.display = 'flex';
+  // 이름 입력란에 포커스
+  setTimeout(function(){
+    var inp = document.getElementById('inp-name');
+    if(inp) inp.focus();
+  }, 50);
+}
  
 // ── 인트로 → 브리핑 ──
 function startGame(){
@@ -357,6 +362,8 @@ function addAwakeStep(){
   el.innerHTML = '';
  
   if(step.t === 'glitch'){
+    // 🔊 BLACKSITE 화면 등장 → awake BGM 정지
+    stopBgm();
     var g = document.createElement('div');
     g.className='glitch'; g.setAttribute('data-t','BLACKSITE'); g.textContent='BLACKSITE';
     el.appendChild(g);
@@ -385,6 +392,8 @@ function addAwakeStep(){
     el.appendChild(d);
  
   } else if(step.t === 'dlg-cat'){
+    // 🔊 비서 이노 첫 등장("대표님, 괜찮으세요?") → phase2 BGM 시작
+    if(_currentBgm !== 'phase2') playBgm('phase2');
     var cin = document.getElementById('awake-cin');
     cin.style.backgroundImage = '';
     cin.style.backgroundColor = '#000';
@@ -428,9 +437,7 @@ function startP2(){
   stopMovePulse(); // 1페이즈 이동 버튼 펄스 종료
   G.p2Queue = Object.keys(G.collected).filter(function(id){return G.collected[id].correct;});
   G.choices = {};
-  // 🔊 awake BGM → phase2 BGM 전환 (비서 이노 첫 등장 = 2페이즈 시작)
-  stopBgm();
-  playBgm('phase2');
+  // 🔊 phase2 BGM은 각성씬 비서 이노 등장 시 이미 시작됨
   show('s-p2');
   buildP2Grid();
   document.getElementById('p2-badge').textContent = '0/'+G.p2Queue.length;
@@ -691,6 +698,11 @@ function restartAll(){
   // 첫 방문 툴팁 플래그 초기화
   _r1FirstVisit = true;
   stopMovePulse();
+  // 시작하기 버튼 복원, 로그인 필드 숨기기
+  var btnEnter = document.getElementById('btn-enter');
+  var loginFields = document.getElementById('login-fields');
+  if(btnEnter) btnEnter.style.display = 'block';
+  if(loginFields) loginFields.style.display = 'none';
   show('s-intro');
 }
  
