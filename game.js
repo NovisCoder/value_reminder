@@ -624,6 +624,19 @@ function calcResult(){
   document.getElementById('r-score').textContent = total+'점 / 40점';
   document.getElementById('r-title').textContent = gTitles[grade];
   document.getElementById('r-body').textContent = gBodies[grade];
+
+  var gradeImages = {
+    S: 'images/sgrade.png',
+    A: 'images/agrade.png',
+    B: 'images/bgrade.png',
+    C: 'images/cgrade.png',
+    D: 'images/dgrade.png'
+  };
+  var gradeImg = document.getElementById('r-grade-img');
+  if(gradeImg){
+    gradeImg.src = gradeImages[grade];
+    gradeImg.alt = grade + '등급 결과 이미지';
+  }
  
   show('s-result');
 }

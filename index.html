@@ -182,7 +182,8 @@ input[type=text]::placeholder{color:rgba(255,255,255,.3)}
 .r-title{font-size:17px;font-weight:700;color:#fff;margin-top:18px;text-align:center;line-height:1.4}
 .r-body{font-size:13px;color:rgba(255,255,255,.6);text-align:center;line-height:1.75;margin-top:10px;padding:0 4px}
 .r-extra{margin-top:14px;padding:12px;background:rgba(232,25,44,.1);border:1px solid rgba(232,25,44,.25);border-radius:6px;font-size:12px;color:#ff8080;line-height:1.65;text-align:center}
-.r-btns{width:100%;display:flex;flex-direction:column;gap:8px;margin-top:24px;padding-bottom:28px}
+.grade-result-img{width:min(78%,300px);max-height:220px;object-fit:contain;display:block;margin:18px auto 4px;filter:drop-shadow(0 8px 18px rgba(0,0,0,.45))}
+.r-btns{width:100%;display:flex;flex-direction:column;gap:8px;margin-top:20px;padding-bottom:28px}
 
 /* 이동 버튼 */
 .move-btn{padding:7px 14px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:20px;color:#fff;font-size:12px;cursor:pointer;white-space:nowrap}
@@ -751,6 +752,7 @@ input[type=text]::placeholder{color:rgba(255,255,255,.3)}
     <div class="r-title" id="r-title"></div>
     <div class="r-body" id="r-body"></div>
     <div class="r-extra" id="r-extra" style="display:none"></div>
+    <img class="grade-result-img" id="r-grade-img" src="" alt="최종 등급 이미지">
     <div class="r-btns">
       <button class="btn btn-outline" onclick="restartAll()">처음부터 다시하기</button>
       <button class="btn btn-gray" onclick="restartP2()">일루셔니스트 게임즈 사장실부터 다시하기</button>
