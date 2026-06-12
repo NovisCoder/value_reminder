@@ -123,7 +123,14 @@ input[type=text]::placeholder{color:rgba(255,255,255,.3)}
 .ov{position:absolute;inset:0;background:rgba(0,0,0,.78);display:flex;align-items:flex-end;padding:12px;z-index:50}
 .pop{width:100%;background:#141420;border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:18px;max-height:78vh;overflow-y:auto}
 .pop-tag{font-size:10px;color:rgba(255,255,255,.35);letter-spacing:.15em;margin-bottom:6px;text-transform:uppercase}
-.pop-title{font-size:14px;font-weight:700;color:#fff;margin-bottom:10px;line-height:1.45}
+.pop-title {
+  font-size: 18px;            /* 글자 크기를 14px에서 18px로 확대 */
+  font-weight: 700;
+  color: #ffffff;             /* 가장 밝은 순수 흰색으로 변경 */
+  text-shadow: 0 0 4px rgba(255, 255, 255, 0.2); /* 글자를 더 선명하고 밝게 보이게 하는 효과 */
+  margin-bottom: 10px;
+  line-height: 1.45;
+}
 .pop-body{font-size:13px;color:rgba(255,255,255,.65);line-height:1.75;padding:10px 12px;background:rgba(255,255,255,.03);border-radius:6px;border-left:2px solid #F5A623;margin-bottom:14px}
 .pop-row{display:flex;gap:8px}
 .pop-row .btn{flex:1;padding:12px;font-size:13px}
