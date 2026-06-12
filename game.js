@@ -241,16 +241,19 @@ function nextBoss(){
 var AWAKE = [
   {t:'glitch'},
   {t:'sil'},
-  {t:'dlg-cat', img:'surp', sp:'비서', tx:'대표님, 괜찮으세요?'},
+  {t:'dlg-cat', img:'surp', sp:'비서 이노', tx:'대표님, 괜찮으세요?'},
   {t:'room-reveal'},
-  {t:'line', tx:'눈을 떠보니 — 집무실이다.', white:true},
+  {t:'line', tx:'(서서히 눈을 뜬다)', white:true},
+  {t:'line', tx:'"여기는..일루셔니스트 게임즈 CEO 집무실이다"', white:true},
   {t:'line', tx:'"뭐지…? 꿈이었던 건가?"'},
-  {t:'dlg-cat', img:'surp', sp:'비서', tx:'대표님, 정신이 좀 드세요?\n갑자기 꾸벅꾸벅 주무시길래 깜짝 놀랐잖아요!'},
+  {t:'dlg-cat', img:'surp', sp:'비서 이노', tx:'대표님, 정신이 좀 드세요?\n갑자기 꾸벅꾸벅 주무시길래 깜짝 놀랐잖아요!'},
   {t:'line', tx:'"꿈이었구나…"', white:true},
-  {t:'line', tx:'"꿈에서 스파이가 되어 수집했던\n일루셔니스트 게임즈 회사의 약점들…\n사실 그 모든 단서들은\n대표로서 내가 해결해야 할 과제들이었구나."'},
-  {t:'dlg-cat', img:'smile', sp:'비서', tx:'대표님, 그럼 천천히 보시고\n다시 결재 부탁드릴게요~ 😊'},
+  {t:'line', tx:'"꿈이었지만...\n일루셔니스트 게임즈의 약점들...\n대표로서 무시할 수 없는 현실이었어."', white:true},
+  {t:'line', tx:'"일루셔니스트 게임즈 대표로서\n지금부터 내가 해결해야 할 과제들이야"'},
+  {t:'dlg-cat', img:'smile', sp:'비서 이노', tx:'대표님, 그럼 결재 8건은 천천히 보시고\n다시 결재 부탁드릴게요~ 😊'},
   {t:'cat-exit'},
-  {t:'line', tx:'"자, 정신 차리고 다시 의사결정을 해볼까?\n일루셔니스트 게임즈 대표로서!"', white:true},
+  {t:'line', tx:'"꿈에서 봤던 8개의 약점들이 내가 결재해야할 의사결정들이었구나!"', white:true},
+  {t:'line', tx:'"좋아, 그럼 의사결정을 시작 해볼까?\n일루셔니스트 게임즈 대표로서!"', white:true},
   {t:'next'}
 ];
  
