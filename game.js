@@ -464,7 +464,7 @@ function buildP2Grid(){
       'min-height:80px'
     ].join(';');
     card.innerHTML = [
-      '<div style="font-size:10px;color:rgba(245,166,35,.7);letter-spacing:.06em">CLUE '+(idx<9?'0'+(idx+1):idx+1)+'</div>',
+      '<div style="font-size:10px;color:rgba(245,166,35,.7);letter-spacing:.06em">CLUE</div>',
       '<div style="font-size:12px;color:#fff;font-weight:600;line-height:1.4">'+cl.tag.replace(/CLU-\d+ · /,'')+'</div>',
       '<div id="p2-status-'+id+'" style="font-size:11px;color:rgba(255,255,255,.3);margin-top:auto">미결정</div>'
     ].join('');
